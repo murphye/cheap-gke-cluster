@@ -37,10 +37,19 @@ brew install hashicorp/tap/terraform
 
 It is assumed that you already have `gcloud` installed and initialized for use with your project. If not, follow the instructions on this [page](https://cloud.google.com/sdk/docs/install).
 
+Now you can run Terraform:
+
 ```
 cd terraform
 terraform init
 terraform apply --auto-approve
+```
+
+Terraform will take several minutes to run. Please be patient! A lot of things are being provisioned and installed.
+
+Next, you must deploy the Petstore sample application and a `VirtualService` to route traffic to that application:
+
+```
 kubectl apply -f ../petstore.yaml
 kubectl apply -f ../virtualservice.yaml
 ```
