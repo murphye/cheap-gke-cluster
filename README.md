@@ -7,7 +7,7 @@ See this blog post for a detailed explanation: TODO
 You can run a 3 node, 6 core GKE cluster for about USD $24.00 in a region with a 90% discount on `e2-standard-2` Spot VM instances. Every possible measure for cost cutting has been taken while still having a 
 very usable GKE cluster.
 
-**Note:** Google Cloud gives you 1 free GKE control plane. If you run more than 1 GKE cluster, you will incur additional charges for each control plane.
+**Warning:** Google Cloud gives you 1 free GKE control plane. If you run more than 1 GKE cluster, you will incur $74.40 per month for each control plane!
 
 ## Deploy Cheap Kubernetes Cluster with Load Balancer, and Petstore Application
 
@@ -38,7 +38,7 @@ brew install hashicorp/tap/terraform
 ```
 cd terraform
 terraform init
-terraform apply
+terraform apply --auto-approve
 kubectl apply -f ../petstore.yaml
 kubectl apply -f ../virtualservice.yaml
 ```
@@ -55,10 +55,13 @@ curl -v http://${ipaddress}/
 
 ## How Does it Work?
 
-The overall solution is a bit complex and does use some Beta features of Google Cloud. The solution has been implemented in Terraform to make it easy to deploy. These are the main parts of the solution:
+The overall solution is a bit complex and does use some Beta features of Google Cloud. The solution has been implemented in Terraform to make it easy to deploy. More details are available in the blog post.
 
-1. Use a private GKE cluster using only Spot VM instances as the cluster nodes. This will save you up to 90% on the cost of VMs.
-2. Use a Regional (rather than Global) HTTP Load Balancer which is currently free as a Beta preview. Additional costs may be incurred in the future.
+These are the main parts of the solution to achieve a high level of cost savings:
+
+1. Use a private GKE cluster using only Spot VM instances as the cluster nodes. This will save you up to 90% on the cost of VMs, depending on the region. This could save you up to $150 per month for GKE node VMs for a 3 node, 6 core cluster.
+2. Use a Regional (rather than Global) HTTP Load Balancer which is currently free as a Beta preview. Additional costs may be incurred in the future. This currently saves you $18.26 per month.
+3. The 1st GKE control plane is free. This currently saves $74.40 per month.
 
 Terraform configs (`.tf`) are commented with specific details and references to explain how the deployment works and why. Also see the blog post for specifics.
 

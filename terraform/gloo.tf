@@ -8,26 +8,12 @@ provider "helm" {
   }
 }
 
-provider "kubernetes" {
-  config_path    = "~/.kube/config"
-  # This is the standard name format for GKE cluster kubectl contexts
-  config_context = "gke_${var.project_id}_${var.zone}_${var.gke_cluster_name}"
-}
-
-resource "kubernetes_namespace" "gloo_system" {
-  # Need to give a bit more time for the cluster to be reachable before the namespace can be created
-  depends_on = [null_resource.local_k8s_context]
-  metadata {
-    # gloo-system is the standard namespace for Gloo Edge
-    name = "gloo-system"
-  }
-}
-
 resource "helm_release" "gloo" {
-  depends_on = [kubernetes_namespace.gloo_system]
+  depends_on = [null_resource.local_k8s_context]
   name       = "gloo-edge"
   # gloo-system is the standard namespace for Gloo Edge
   namespace  = "gloo-system"
+  create_namespace = true
 
   repository = "https://storage.googleapis.com/solo-public-helm"
   chart      = "gloo"
@@ -38,7 +24,6 @@ resource "helm_release" "gloo" {
     # Also, don't want to use LoadBalancer as that will automatically trigger creation of an unneeded GCP load balancer
     name  = "gatewayProxies.gatewayProxy.service.type"
     value = "ClusterIP"
-    
   }
 
   set {

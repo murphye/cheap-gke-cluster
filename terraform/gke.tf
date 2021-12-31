@@ -70,7 +70,7 @@ resource "google_container_cluster" "default" {
 
 resource "time_sleep" "wait_for_kube" {
   depends_on = [google_container_cluster.default]
-  # GKE master endpoint will not be immediately accessible, resulting in error, waiting does the trick
+  # GKE master endpoint may not be immediately accessible, resulting in error, waiting does the trick
   create_duration = "30s"
 }
 
