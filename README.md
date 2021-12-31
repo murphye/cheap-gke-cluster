@@ -34,9 +34,9 @@ gcloud config set project REPLACE_WITH_YOUR_PROJECT_ID
 ```
 You may also choose to change the region you choose to deploy. Each GCP region has different pricing for VM Spot instances. See this [page](https://cloud.google.com/compute/vm-instance-pricin) for pricing details.
 
-## Run the Deployment
+## Deploy the GKE Cluster
 
-Now you can run Terraform:
+Now you can run Terraform to deploy GKE and all of the supporting components needed for this solution to work.
 
 ```
 cd terraform
@@ -44,7 +44,7 @@ terraform init
 terraform apply --auto-approve
 ```
 
-Terraform will take several minutes to run. Please be patient! A lot of things are being provisioned and installed.
+Terraform will take several minutes to run. Please be patient! A lot of things are being provisioned and installed beyond just GKE.
 
 Next, you must deploy the Petstore sample application and a `VirtualService` to route traffic to that application:
 
@@ -65,9 +65,17 @@ curl http://$ipaddress
 [{"id":1,"name":"Dog","status":"available"},{"id":2,"name":"Cat","status":"pending"}]
 ```
 
-## How Does it Work?
+## Tear Down the GKE Cluster
 
-The overall solution is a bit complex and does use some Beta features of Google Cloud. The solution has been implemented in Terraform to make it easy to deploy. More details are available in the blog post.
+When you are done, you can remove everything from Google Cloud with this command:
+
+```
+terraform destroy
+```
+
+## How Does the Solution Work?
+
+The overall solution is a bit complex and does use some Beta features of Google Cloud. The solution has been implemented in Terraform to make it easy to deploy, as there are many components and configurations required.
 
 These are the main parts of the solution to achieve a high level of cost savings:
 
@@ -93,11 +101,11 @@ Next you should proceed with:
 1. Deploying your own application onto your new Kubernetes cluster.
 1. Modifying `virtualservice.yaml` to use your application's upstream. You can view upstreams with `glooctl get upstream`. Make sure the application is available at `/` or the Load Balancer health checks will fail. You may choose to rewrite the path as is done in `virtualservice.yaml` or change the `regional-l7-xlb-map-http` and `l7-xlb-basic-check-http` in `load-balancer.tf` to use a path other than `"/"`.
 
-### Optional: Use Anti-Affinity Rules for Application Resilency
+### Use Anti-Affinity Rules for Application Resilency
 
 Spot VM nodes can be shut down at any time. You should strive to run 2 replicas of your pods with `podAntiAffinity` set. See `petstore.yaml` for an example of this.
 
-### Optional: Use Retries for Application Resilency
+### Use Retries for Application Resilency
 
 When a Spot VM node goes down, there may be traffic in route to the pods on that node. This may result in HTTP errors. As such, it's best to implement a retry mechanism that  allows HTTP requests to be resent to the 2nd instance of your application. See `virtualservice.yaml` for an example of implementing retries with Gloo Edge.
 
