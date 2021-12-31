@@ -1,3 +1,14 @@
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
+}
+
+provider "kubernetes" {
+  config_path    = "~/.kube/config"
+  config_context = "gke_${var.project_id}_${var.zone}_${var.gke_cluster_name}"
+}
+
 variable "project_id" {
   description = "The project ID to host the cluster in"
 }
@@ -10,14 +21,25 @@ variable "zone" {
   description = "The zone to host the cluster in (required if is a zonal cluster)"
 }
 
-variable "gke_cluster_name" {
-  description = "The name of the cluster"
-}
-
 variable "network_name" {
   description = "The name of the network"
 }
 
+variable "gke_cluster_name" {
+  description = "The name of the cluster"
+}
+
+variable "num_nodes" {
+  description = "The number of cluster nodes"
+}
+
+variable "machine_type" {
+  description = "The machine type of the cluster nodes"
+}
+
+variable "disk_size" {
+  description = "The disk size of the cluster nodes"
+}
 
 resource "google_compute_network" "default" {
   name                    = var.network_name
@@ -37,7 +59,6 @@ resource "google_compute_subnetwork" "proxy" {
   role          = "ACTIVE"
 }
 
-# Subnet
 resource "google_compute_subnetwork" "default" {
   name          = "${var.gke_cluster_name}-subnet"
   project       = google_compute_network.default.project
@@ -67,7 +88,7 @@ resource "google_container_cluster" "default" {
   project  = var.project_id
   name     = var.gke_cluster_name
   location = var.zone
-  initial_node_count = 3
+  initial_node_count = var.num_nodes
   networking_mode = "VPC_NATIVE"
   network    = google_compute_network.default.name
   subnetwork = google_compute_subnetwork.default.name
@@ -75,8 +96,8 @@ resource "google_container_cluster" "default" {
 
   node_config {
     spot = true
-    machine_type = "e2-standard-2"
-    disk_size_gb = 20
+    machine_type = var.machine_type
+    disk_size_gb = var.disk_size
     tags = ["${var.gke_cluster_name}"]
   }
   
@@ -111,6 +132,7 @@ resource "google_container_cluster" "default" {
   }
 }
 
+# Update the kube config for the new cluster and make it the current cluster context
 resource "null_resource" "local_k8s_context" {
   depends_on = [google_container_cluster.default]
   provisioner "local-exec" {
@@ -118,8 +140,56 @@ resource "null_resource" "local_k8s_context" {
   }
 }
 
+resource "time_sleep" "wait_for_kube" {
+  depends_on = [null_resource.local_k8s_context]
+  create_duration = "30s"
+}
+
+resource "kubernetes_namespace" "gloo_system" {
+  # Need to give a bit more time for the cluster to be reachable
+  depends_on = [time_sleep.wait_for_kube]
+  metadata {
+    name = "gloo-system"
+  }
+}
+
+# Install Gloo Edge, an Envoy-based Kubernetes ingress and API gateway
+resource "helm_release" "gloo" {
+  depends_on = [kubernetes_namespace.gloo_system]
+  name       = "gloo-edge"
+  namespace  = "gloo-system"
+
+  repository = "https://storage.googleapis.com/solo-public-helm"
+  chart      = "gloo"
+  
+  set {
+    name  = "gatewayProxies.gatewayProxy.service.type"
+    value = "ClusterIP"
+    # Because we are using a container native network, and the NEG, only a ClusterIP is needed
+    # Also, don't want to use LoadBalancer as that will automatically trigger creation of an unneeded GCP load balancer
+  }
+
+  set {
+    name  = "gatewayProxies.gatewayProxy.kind.deployment.replicas"
+    value = "2"
+    # Because we are using only spot nodes, having at least 2 replicas is needed for resiliency
+  }
+
+  set {
+    name  = "gatewayProxies.gatewayProxy.antiAffinity"
+    value = "true"
+    # Because we are using only spot nodes, need to have antiAffinity for resiliency
+  }
+
+  set {
+    name  = "gatewayProxies.gatewayProxy.service.extraAnnotations.cloud\\.google\\.com/neg"
+    value = <<EOT
+    {"exposed_ports": {"80":{"name": "ingressgateway"}}}
+    EOT
+  }
+}
+
 resource "google_compute_forwarding_rule" "primary" {
-  provider   = google-beta
   depends_on = [google_compute_subnetwork.proxy]
   name       = "l7-xlb-forwarding-rule-http"
   project    = google_compute_subnetwork.default.project
@@ -148,10 +218,15 @@ resource "google_compute_region_url_map" "default" {
 }
 
 resource "google_compute_region_backend_service" "default" {
+  depends_on = [helm_release.gloo]
   project = google_compute_subnetwork.default.project
   region  = google_compute_subnetwork.default.region
+  name        = "l7-xlb-backend-service-http"
+  protocol    = "HTTP"
+  timeout_sec = 10
 
   load_balancing_scheme = "EXTERNAL_MANAGED"
+  health_checks = [google_compute_region_health_check.default.id]
 
   backend {
     group = "https://www.googleapis.com/compute/v1/projects/${var.project_id}/zones/${var.zone}/networkEndpointGroups/ingressgateway"
@@ -159,12 +234,6 @@ resource "google_compute_region_backend_service" "default" {
     balancing_mode = "RATE"
     max_rate_per_endpoint = 3500
   }
-
-  name        = "l7-xlb-backend-service-http"
-  protocol    = "HTTP"
-  timeout_sec = 10
-
-  health_checks = [google_compute_region_health_check.default.id]
 }
 
 resource "google_compute_region_health_check" "default" {
@@ -174,7 +243,7 @@ resource "google_compute_region_health_check" "default" {
   name   = "l7-xlb-basic-check-http"
   http_health_check {
     port_specification = "USE_SERVING_PORT"
-    request_path = "/productpage"
+    request_path = "/"
   }
 }
 
