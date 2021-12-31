@@ -73,7 +73,7 @@ When you are done, you can remove everything from Google Cloud with this command
 terraform destroy
 ```
 
-## How Does the Solution Work?
+## How Does It Work?
 
 The overall solution is a bit complex and does use some Beta features of Google Cloud. The solution has been implemented in Terraform to make it easy to deploy, as there are many components and configurations required.
 
