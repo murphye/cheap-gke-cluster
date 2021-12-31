@@ -69,7 +69,7 @@ Terraform configs (`.tf`) are commented with specific details and references to 
 
 ## Next Steps For Using Your Cheap GKE Cluster
 
-### Deplying an Application and Using Gloo Edge to Route Traffic
+### Deplying Another Application and Using Gloo Edge to Route Traffic
 
 [Gloo Edge](https://docs.solo.io/gloo-edge/master/) provides powerful traffic routing capabilities that go far beyond the standard [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/). As Gloo Edge uses Envoy, capabilities such as retries help improve the resiliency of routing to applications in your cluster that is using Spot VM node instances.
 
@@ -79,3 +79,13 @@ It's beneficial, but not required, to [install `glooctl`](https://docs.solo.io/g
 2. Examine `virtualservice.yaml` and [understand how it works](https://docs.solo.io/gloo-edge/master/introduction/traffic_management/).
 3. Deploy your own application onto your new Kubernetes cluster.
 4. Modify `virtualservice.yaml` to use your application's upstream. You can view upstreams with `glooctl get upstream`.
+
+### Use Anti-Affinity Rules for Application Resilency
+
+Spot VM nodes can be shut down at any time. You should strive to run 2 replicas of your pods with `podAntiAffinity` set. See `petstore.yaml` for an example of this.
+
+### Use Retries for Application Resilency
+
+When a Spot VM node goes down, there may be traffic in route to the pods on that node. This may result in HTTP errors. As such, it's best to implement a retry mechanism that  allows HTTP requests to be resent to the 2nd instance of your application. See `virtualservice.yaml` for an example of implementing retries with Gloo Edge.
+
+If you have a microservice architecture with microservices deployed across nodes, Istio service mesh (not provided in this solution) would allow you to implement retries between services. This topic might be covered in a future blog post in the context of this solution.
