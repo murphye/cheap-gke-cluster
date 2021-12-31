@@ -9,7 +9,7 @@ very usable GKE cluster.
 
 **Warning:** Google Cloud gives you 1 free GKE control plane. If you run more than 1 GKE cluster, you will incur $74.40 per month for each control plane!
 
-## Deploy Cheap Kubernetes Cluster with Load Balancer, and Petstore Application
+## Setup
 
 Change `terraform.tfvars` to use your Google Cloud `PROJECT_ID`. You can find your `PROJECT_ID` by running this command:
 
@@ -33,7 +33,7 @@ brew tap hashicorp/tap
 brew install hashicorp/tap/terraform
 ```
 
-### Run the Deployment
+## Run the Deployment
 
 ```
 cd terraform
