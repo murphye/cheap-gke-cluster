@@ -1,4 +1,4 @@
-project_id  = "murphye"
+project_id  = "REPLACE_WITH_YOUR_PROJECT_ID"
 # Pick a region with low spot VM prices that support regional networking
 # https://cloud.google.com/compute/vm-instance-pricing
 region      = "us-west4"
