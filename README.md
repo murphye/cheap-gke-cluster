@@ -1,13 +1,10 @@
-# How to Build and Run a Cheap GKE Cluster
+# How to Build and Run a Cheap GKE Cluster (As Low as $24 Per Month)
 
-See this blog post for a detailed explanation: TODO
+What if I told you that you could run a 3 node, 6 core, GKE cluster at over a 90% discount, or only about USD $24.00 per month? In this Git repository, you can use an automated way to deploy a GKE cluster with all of the cost savings maneuvers in place using Terraform.
 
-## How Cheap is it?
+**Warning:** Google Cloud only gives you 1 free GKE control plane. If you run more than 1 GKE cluster, you will incur $74.40 per month for each control plane!
 
-You can run a 3 node, 6 core GKE cluster for about USD $24.00 in a region with a 90% discount on `e2-standard-2` Spot VM instances. Every possible measure for cost cutting has been taken while still having a 
-very usable GKE cluster.
-
-**Warning:** Google Cloud gives you 1 free GKE control plane. If you run more than 1 GKE cluster, you will incur $74.40 per month for each control plane!
+**See this blog post for a detailed explanation: TODO**
 
 ## Setup to Deploy
 
@@ -96,11 +93,11 @@ Next you should proceed with:
 1. Deploying your own application onto your new Kubernetes cluster.
 1. Modifying `virtualservice.yaml` to use your application's upstream. You can view upstreams with `glooctl get upstream`. Make sure the application is available at `/` or the Load Balancer health checks will fail. You may choose to rewrite the path as is done in `virtualservice.yaml` or change the `regional-l7-xlb-map-http` and `l7-xlb-basic-check-http` in `load-balancer.tf` to use a path other than `"/"`.
 
-### Use Anti-Affinity Rules for Application Resilency
+### Optional: Use Anti-Affinity Rules for Application Resilency
 
 Spot VM nodes can be shut down at any time. You should strive to run 2 replicas of your pods with `podAntiAffinity` set. See `petstore.yaml` for an example of this.
 
-### Use Retries for Application Resilency
+### Optional: Use Retries for Application Resilency
 
 When a Spot VM node goes down, there may be traffic in route to the pods on that node. This may result in HTTP errors. As such, it's best to implement a retry mechanism that  allows HTTP requests to be resent to the 2nd instance of your application. See `virtualservice.yaml` for an example of implementing retries with Gloo Edge.
 
