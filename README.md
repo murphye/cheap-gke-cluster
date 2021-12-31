@@ -9,7 +9,7 @@ very usable GKE cluster.
 
 **Warning:** Google Cloud gives you 1 free GKE control plane. If you run more than 1 GKE cluster, you will incur $74.40 per month for each control plane!
 
-## Setup
+## Setup to Deploy
 
 Change `terraform.tfvars` to use your Google Cloud `PROJECT_ID`. You can find your `PROJECT_ID` by running this command:
 
