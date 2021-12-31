@@ -2,7 +2,12 @@
 
 See this blog post for a detailed explanation: TODO
 
-Terraform configs (`.tf`) are commented with specific details and references to explain how the deployment works and why.
+## How Cheap is it?
+
+You can run a 3 node, 6 core GKE cluster for about USD $24.00 in a region with a 90% discount on `e2-standard-2` Spot VM instances. Every possible measure for cost cutting has been taken while still having a 
+very usable GKE cluster.
+
+**Note:** Google Cloud gives you 1 free GKE control plane. If you run more than 1 GKE cluster, you will incur additional charges for each control plane.
 
 ## Deploy Cheap Kubernetes Cluster with Load Balancer, and Petstore Application
 
@@ -17,6 +22,7 @@ You should also update your current project for `gcloud` if it's not set to the 
 ```
 gcloud config set project REPLACE_WITH_YOUR_PROJECT_ID
 ```
+You may also choose to change the region you choose to deploy. Each GCP region has different pricing for VM Spot instances. See this [page](https://cloud.google.com/compute/vm-instance-pricin) for pricing details.
 
 ### Install Terraform (If Needed)
 
@@ -46,6 +52,15 @@ Run the curl command. You should see JSON in the response from the Petstore appl
 ```
 curl -v http://${ipaddress}/
 ```
+
+## How Does it Work?
+
+The overall solution is a bit complex and does use some Beta features of Google Cloud. The solution has been implemented in Terraform to make it easy to deploy. These are the main parts of the solution:
+
+1. Use a private GKE cluster using only Spot VM instances as the cluster nodes. This will save you up to 90% on the cost of VMs.
+2. Use a Regional (rather than Global) HTTP Load Balancer which is currently free as a Beta preview. Additional costs may be incurred in the future.
+
+Terraform configs (`.tf`) are commented with specific details and references to explain how the deployment works and why. Also see the blog post for specifics.
 
 ## Next Steps For Using Your Cheap GKE Cluster
 
