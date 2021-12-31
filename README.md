@@ -4,7 +4,7 @@ What if I told you that you could run a 3 node, 6 core, GKE cluster at over a 90
 
 **Warning: Google Cloud only gives you 1 free GKE control plane. If you run more than 1 GKE cluster, you will incur $74.40 per month for each control plane no matter what!**
 
-### See this blog post for a detailed explanation: TODO
+### [See this blog post for a detailed explanation: TODO](http://)
 
 This solution is primarily for people learning Kubernetes and GKE, or just people tinkering with GKE that don't want to pay full price. GKE is expensive to the individual and this solution makes it even cheaper than low-cost Kubernetes services like Civo. 
 
