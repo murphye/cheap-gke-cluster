@@ -48,9 +48,11 @@ Get the IP Address of the load balancer for running the `curl` command to verify
 ipaddress=$(gcloud compute addresses describe my-static-ip --format="value(address)")
 ```
 
-Run the curl command. You should see JSON in the response from the Petstore application.
+Run the curl command. You should see JSON data from the Petstore application.
 ```
-curl -v http://${ipaddress}/
+curl http://$ipaddress
+
+[{"id":1,"name":"Dog","status":"available"},{"id":2,"name":"Cat","status":"pending"}]
 ```
 
 ## How Does it Work?
