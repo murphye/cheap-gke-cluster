@@ -6,6 +6,10 @@ What if I told you that you could run a 3 node, 6 core, GKE cluster at over a 90
 
 ### See this blog post for a detailed explanation: TODO
 
+This solution is primarily for people learning Kubernetes and GKE, or just people tinkering with GKE that don't want to pay full price. GKE is expensive to the individual and this solution makes it even cheaper than low-cost Kubernetes services like Civo. 
+
+The solution, and its cost savings is scalable to larger clusters. It is conceivable that cost-conscious organizations may be interested in the techniques used in this solution as well. Just be aware of the drawbacks! See the blog post for more information.
+
 ## Setup to Deploy
 
 It is assumed that you already have `gcloud` installed and initialized for use with your project. If not, follow the instructions on this [page](https://cloud.google.com/sdk/docs/install).
