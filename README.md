@@ -24,9 +24,9 @@ gcloud config set project REPLACE_WITH_YOUR_PROJECT_ID
 ```
 You may also choose to change the region you choose to deploy. Each GCP region has different pricing for VM Spot instances. See this [page](https://cloud.google.com/compute/vm-instance-pricin) for pricing details.
 
-### Install Terraform (If Needed)
+### Install Terraform
 
-Terraform is required to run the deployment. On a Mac you can use Homebrew by running these commands:
+Terraform is required to run the deployment on your local machine. On a Mac you can use Homebrew by running these commands:
 
 ```
 brew tap hashicorp/tap
@@ -34,6 +34,8 @@ brew install hashicorp/tap/terraform
 ```
 
 ## Run the Deployment
+
+It is assumed that you already have `gcloud` installed and initialized for use with your project. If not, follow the instructions on this [page](https://cloud.google.com/sdk/docs/install).
 
 ```
 cd terraform
