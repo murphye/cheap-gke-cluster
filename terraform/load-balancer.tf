@@ -6,6 +6,7 @@
 # Subnet reserved for Regional External HTTP Load Balancers that use a managed Envoy proxy.
 # More information is available here: https://cloud.google.com/load-balancing/docs/https/proxy-only-subnets
 resource "google_compute_subnetwork" "proxy" {
+  depends_on = [google_compute_network.default]
   provider = google-beta
   name          = "proxy-only-subnet"
   # This CIDR doesn't conflict with GKE's subnet
@@ -42,6 +43,7 @@ resource "google_compute_region_target_http_proxy" "default" {
 
 # https://registry.terraform.io/providers/hashicorp/google-beta/latest/docs/resources/compute_region_url_map
 resource "google_compute_region_url_map" "default" {
+  depends_on = [google_compute_region_backend_service.default]
   project = google_compute_subnetwork.default.project
   region  = google_compute_subnetwork.default.region
   name    = "regional-l7-xlb-map-http"
@@ -53,6 +55,7 @@ resource "google_compute_region_url_map" "default" {
     name = "allpaths"
     default_service = google_compute_region_backend_service.default.id
     path_rule {
+      service = google_compute_region_backend_service.default.id
       paths   = ["/"]
       route_action {
         # Because the ingress gateways run on spot nodes, there might be connection draining issues or other connection issues
@@ -110,7 +113,7 @@ resource "google_compute_region_health_check" "default" {
 }
 
 resource "google_compute_address" "default" {
-  name = "my-static-ip"
+  name = var.ip_address_name
   project = google_compute_subnetwork.default.project
   region  = google_compute_subnetwork.default.region
   # Required to be STANDARD for use with REGIONAL_MANAGED_PROXY

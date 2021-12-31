@@ -32,6 +32,10 @@ variable "disk_size" {
   description = "The disk size of the cluster nodes"
 }
 
+variable "ip_address_name" {
+  description = "The name of the static IP Address for the load balancer"
+}
+
 resource "google_compute_network" "default" {
   name                    = var.network_name
   auto_create_subnetworks = "false"

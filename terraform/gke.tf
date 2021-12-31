@@ -4,6 +4,7 @@
 # https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg
 
 resource "google_compute_subnetwork" "default" {
+  depends_on    = [google_compute_network.default]
   name          = "${var.gke_cluster_name}-subnet"
   project       = google_compute_network.default.project
   region        = var.region
@@ -70,11 +71,11 @@ resource "google_container_cluster" "default" {
 resource "time_sleep" "wait_for_kube" {
   depends_on = [google_container_cluster.default]
   # GKE master endpoint will not be immediately accessible, resulting in error, waiting does the trick
-  create_duration = "60s"
+  create_duration = "30s"
 }
 
 resource "null_resource" "local_k8s_context" {
-  depends_on = [null_resource.local_k8s_context]
+  depends_on = [time_sleep.wait_for_kube]
   provisioner "local-exec" {
     # Update your local gcloud and kubectl credentials for the newly created cluster
     command = "gcloud container clusters get-credentials ${var.gke_cluster_name} --project=${var.project_id} --zone=${var.zone}"

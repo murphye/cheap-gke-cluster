@@ -30,9 +30,11 @@ brew install hashicorp/tap/terraform
 ### Run the Deployment
 
 ```
+cd terraform
 terraform init
 terraform apply
-kubectl apply -f petstore.yaml
+kubectl apply -f ../petstore.yaml
+kubectl apply -f ../virtualservice.yaml
 ```
 
 Get the IP Address of the load balancer for running the `curl` command to verify deployment. Change the `my-static-ip` if it was changed in the `terraform.tfvars`
@@ -45,4 +47,15 @@ Run the curl command. You should see JSON in the response from the Petstore appl
 curl -v http://${ipaddress}/
 ```
 
+## Next Steps For Using Your Cheap GKE Cluster
 
+### Deplying an Application and Using Gloo Edge to Route Traffic
+
+[Gloo Edge](https://docs.solo.io/gloo-edge/master/) provides powerful traffic routing capabilities that go far beyond the standard [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/). As Gloo Edge uses Envoy, capabilities such as retries help improve the resiliency of routing to applications in your cluster that is using Spot VM node instances.
+
+It's beneficial, but not required, to [install `glooctl`](https://docs.solo.io/gloo-edge/master/installation/glooctl_setup/) to work with Gloo Edge.
+
+1. Read the blog post linked at the top of this `README.md`
+2. Examine `virtualservice.yaml` and [understand how it works](https://docs.solo.io/gloo-edge/master/introduction/traffic_management/).
+3. Deploy your own application onto your new Kubernetes cluster.
+4. Modify `virtualservice.yaml` to use your application's upstream. You can view upstreams with `glooctl get upstream`.

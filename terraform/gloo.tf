@@ -16,7 +16,7 @@ provider "kubernetes" {
 
 resource "kubernetes_namespace" "gloo_system" {
   # Need to give a bit more time for the cluster to be reachable before the namespace can be created
-  depends_on = [time_sleep.wait_for_kube]
+  depends_on = [null_resource.local_k8s_context]
   metadata {
     # gloo-system is the standard namespace for Gloo Edge
     name = "gloo-system"
