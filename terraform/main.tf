@@ -11,12 +11,16 @@ variable "zone" {
 }
 
 variable "gke_cluster_name" {
-  description = "The zone to host the cluster in (required if is a zonal cluster)"
+  description = "The name of the cluster"
+}
+
+variable "network_name" {
+  description = "The name of the network"
 }
 
 
 resource "google_compute_network" "default" {
-  name                    = "my-network"
+  name                    = var.network_name
   auto_create_subnetworks = "false"
   project = var.project_id
   routing_mode = "REGIONAL"
@@ -50,7 +54,7 @@ resource "google_compute_router" "router" {
 }
 
 resource "google_compute_router_nat" "nat" {
-  name                               = "my-router-nat"
+  name                               = "router-nat"
   router                             = google_compute_router.router.name
   region                             = google_compute_router.router.region
   project                            = google_compute_router.router.project
@@ -60,7 +64,7 @@ resource "google_compute_router_nat" "nat" {
 
 resource "google_container_cluster" "default" {
   provider = google-beta
-  project = var.project_id
+  project  = var.project_id
   name     = var.gke_cluster_name
   location = var.zone
   initial_node_count = 3
@@ -78,7 +82,8 @@ resource "google_container_cluster" "default" {
   
   addons_config {
     http_load_balancing {
-      disabled = true
+      # This needs to be enabled for the NEG to be automatically created for the ingress gateway svc
+      disabled = false
     }
   }
 
@@ -99,6 +104,7 @@ resource "google_container_cluster" "default" {
 
   master_authorized_networks_config {
     cidr_blocks {
+      # Because this is a private cluster, need to open access to the Master nodes in order to connect with kubectl
       cidr_block = "0.0.0.0/0"
       display_name = "World"
     }
@@ -113,11 +119,11 @@ resource "null_resource" "local_k8s_context" {
 }
 
 resource "google_compute_forwarding_rule" "primary" {
-  provider = google-beta
+  provider   = google-beta
   depends_on = [google_compute_subnetwork.proxy]
-  name   = "l7-xlb-forwarding-rule-http"
-  project = google_compute_subnetwork.default.project
-  region  = google_compute_subnetwork.default.region
+  name       = "l7-xlb-forwarding-rule-http"
+  project    = google_compute_subnetwork.default.project
+  region     = google_compute_subnetwork.default.region
   ip_protocol           = "TCP"
   load_balancing_scheme = "EXTERNAL_MANAGED"
   port_range            = "80"
@@ -137,16 +143,8 @@ resource "google_compute_region_target_http_proxy" "default" {
 resource "google_compute_region_url_map" "default" {
   project = google_compute_subnetwork.default.project
   region  = google_compute_subnetwork.default.region
-  name            = "regional-l7-xlb-map-http"
+  name    = "regional-l7-xlb-map-http"
   default_service = google_compute_region_backend_service.default.id
-}
-
-resource "google_compute_network_endpoint_group" "neg" {
-  name         = "istio-ingressgateway"
-  network      = google_compute_network.default.id
-  subnetwork   = google_compute_subnetwork.default.id
-  zone         = var.zone
-  project      = var.project_id
 }
 
 resource "google_compute_region_backend_service" "default" {
@@ -156,7 +154,7 @@ resource "google_compute_region_backend_service" "default" {
   load_balancing_scheme = "EXTERNAL_MANAGED"
 
   backend {
-    group = google_compute_network_endpoint_group.neg.self_link
+    group = "https://www.googleapis.com/compute/v1/projects/${var.project_id}/zones/${var.zone}/networkEndpointGroups/ingressgateway"
     capacity_scaler = 1
     balancing_mode = "RATE"
     max_rate_per_endpoint = 3500
