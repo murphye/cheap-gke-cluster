@@ -65,7 +65,9 @@ kubectl apply -f ../petstore.yaml
 kubectl apply -f ../virtualservice.yaml
 ```
 
-Get the IP Address of the load balancer for running the `curl` command to verify deployment. Change the `my-static-ip` if it was changed in the `terraform.tfvars`
+Now, wait about 1 minute for everything to get deployed and configured.
+
+Next, get the IP Address of the load balancer for running the `curl` command to verify deployment. Change the `my-static-ip` if it was changed in the `terraform.tfvars`
 ```
 ipaddress=$(gcloud compute addresses describe my-static-ip --format="value(address)")
 ```
@@ -76,6 +78,8 @@ curl http://$ipaddress
 
 [{"id":1,"name":"Dog","status":"available"},{"id":2,"name":"Cat","status":"pending"}]
 ```
+
+If you see a HTTP response of `no healthy upstream`, either you need to give everything a moment to finish deploying, or there is something else wrong. Please make sure all of the pods are running in the `default` namespace and the `gloo-system` namespace as a first step to diagnose.
 
 ## Tear Down the GKE Cluster
 
