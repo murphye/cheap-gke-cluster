@@ -6,7 +6,7 @@ What if I told you that you could run a 3 node, 6 core, GKE cluster at over a 90
 
 ### [See this blog post for a detailed explanation: TODO](http://)
 
-![Alt text](images/cost-over-10-days?raw=true "Cost Over 10 Days")
+![Cost Over 10 Days](images/cost-over-10-days.png)
 
 ### Who is this for?
 
