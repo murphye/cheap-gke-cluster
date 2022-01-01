@@ -131,7 +131,7 @@ If you have a microservice architecture with microservices deployed across nodes
 
 2. *Will only one Spot VM node be replaced at a time?*
 
-    There is no guaranteee when nodes or how many of the nodes will be replaced. Here is an example where 2 of the 3 nodes were replaced at the same time, as they both have the same age. Unfortunately if your application workload only resided on those 2 nodes, it would have been temporarily offline.
+    There is no guaranteee when nodes or how many of the nodes will be replaced. Here is an example where 2 of the 3 nodes were replaced at the same time, as they both have the same age. Unfortunately, if your application workload only resided on those 2 nodes, it would have been temporarily offline until new pods spun up to replace them.
 
 ```
 NAME                                        STATUS   ROLES    AGE     VERSION
