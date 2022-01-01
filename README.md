@@ -84,13 +84,16 @@ The overall solution is a bit complex and does use some Beta features of Google 
 These are the main parts of the solution to achieve a high level of cost savings:
 
 1. Use a private, [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg#create_a-native_cluster), [GKE cluster using only Spot VM instances](https://cloud.google.com/kubernetes-engine/docs/concepts/spot-vms) as the cluster nodes. This will save you up to 90% on the cost of VMs, depending on the GCP region. This could save you up to $150 per month for GKE node VMs for a 3 node, 6 core cluster.
+
 1. Use a [Regional (rather than Global) HTTP Load Balancer](https://cloud.google.com/load-balancing/docs/https) which is currently free as a Beta preview. Additional costs may be incurred in the future. This currently saves you $18.26 per month.
 
     a. Attach the [Regional HTTP Load Balancer to a standalone NEG](https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg#how_to) to route traffic directly from the Load Balancer to the GKE ingress gateway pods to achieve container-native load balancing.
 
-    b. Use [Gloo Edge](https://github.com/solo-io/gloo) for an Envoy-based GKE ingress gateway that provides advanced routing capabilities to services running in the cluster. Gloo Edge also provides reliable traffic routing to mitigate potential errors resulting from Spot VM node shutdowns.
+1. Use [Gloo Edge](https://github.com/solo-io/gloo) for an Envoy-based GKE ingress gateway that provides advanced routing capabilities to services running in the cluster. Gloo Edge also provides reliable traffic routing to mitigate potential errors resulting from Spot VM node shutdowns. Gloo Edge is open source and free to use.
 
 1. The [first GKE control plane is free](https://cloud.google.com/kubernetes-engine/pricing#cluster_management_fee_and_free_tier). This currently saves $74.40 per month.
+
+1. Deploy a [Cloud NAT](https://cloud.google.com/nat/docs/overview) gateway to enable  egress from the private GKE cluster. Additional cost is about [$1 per VM per month](https://cloud.google.com/nat/pricing) plus $0.045 per GB for data processing on egress traffic (which is primarily for pulling external Docker images). If you pull a lot of your own images, using [Artifact Registry](https://cloud.google.com/artifact-registry) would be advisable.
 
 Terraform configs (`.tf`) are commented with specific details and references to explain how the deployment works and why. Also see the blog post for specifics.
 
@@ -119,3 +122,26 @@ Spot VM nodes can be shut down at any time. You should strive to run 2 replicas 
 When a Spot VM node goes down, there may be traffic in route to the pods on that node. This may result in HTTP errors. As such, it's best to implement a retry mechanism that  allows HTTP requests to be resent to the 2nd instance of your application. See `virtualservice.yaml` for an example of implementing retries with Gloo Edge.
 
 If you have a microservice architecture with microservices deployed across nodes, Istio service mesh (not provided in this solution) would allow you to implement retries between services. This topic might be covered in a future blog post in the context of this solution.
+
+## Frequently Asked Questions
+
+1. *How long do the Spot VM nodes run?*
+
+    The longest period of time that I have seen is 23 days in `us-west4`. Most typically will run for several days.
+
+2. *Will only one Spot VM node be replaced at a time?*
+
+    There is no guaranteee when nodes or how many of the nodes will be replaced. Here is an example where 2 of the 3 nodes were replaced at the same time, as they both have the same age. Unfortunately if your application workload only resided on those 2 nodes, it would have been temporarily offline.
+
+```
+NAME                                        STATUS   ROLES    AGE     VERSION
+gke-my-cluster-default-pool-8dc7ce28-dl7h   Ready    <none>   4h14m   v1.21.5-gke.1302
+gke-my-cluster-default-pool-8dc7ce28-k3d3   Ready    <none>   4h14m   v1.21.5-gke.1302
+gke-my-cluster-default-pool-8dc7ce28-cpkd   Ready    <none>   23d     v1.21.5-gke.1302
+```
+
+3. *How can I guarantee that my applications will stay online if multiple Spot VM nodes are replaced at the same time?*
+
+    Having a 100% Spot VM node cluster is not recommended for critical production workloads. You might consider having 2 node pools and spread the workloads across both non-spot and spot nodes. You may consider using [Pod Topology Spread Constraints](https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/) where the `topologyKey` could be `cloud.google.com/gke-spot`. Of course, using non-spot nodes will result in additional cost, but having a portion of your cluster be spot nodes will save significant amounts of money compared to an entirely non-spot cluster.
+
+    Generally speaking, the solution presented in this GitHub repo is only for non-production purposes only.
