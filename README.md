@@ -1,6 +1,6 @@
 # How to Build and Run a Cheap GKE Cluster (As Low as $24 Per Month)
 
-What if I told you that you could run a 3 node, 6 core, GKE cluster at over a 90% discount, or only about $24.00 per month? In this Git repository, you can use Terraform to deploy a GKE cluster with all of the cost savings maneuvers in place.
+What if I told you that you could run a 3 node, 6 core, GKE cluster at over a 90% discount, or only about $24 per month? In this Git repository, you can use Terraform to deploy a GKE cluster with all of the cost savings maneuvers in place.
 
 **Warning: Google Cloud only gives you 1 free GKE control plane. If you run more than 1 GKE cluster, you will incur $74.40 per month for each control plane no matter what!**
 
@@ -169,3 +169,7 @@ kubectl delete pods --field-selector status.phase=Failed --all-namespaces
 8. *Can I use an Ingress Controller implementation such as NGINX instead of Gloo Edge?*
 
     While not provided in this solution, yes you can use an alternative, but Gloo Edge/Envoy is ideally suited for this use case where a high level of resiliency is needed due to the use of Spot VM cluster nodes.
+
+9. *What if I have stateful workloads such as a PostgreSQL database?*
+
+    Generally speaking, you should consider having a 2nd cluster node pool dedicated to stateful workloads. However, if you're dead set on using Spot VM nodes, you might consider adding resilence to your database deployment with replicated container storage such as Portworx to [implement a form of HA with PostgreSQL](https://portworx.com/blog/ha-postgresql-kubernetes/). You might also consider database alternatives such as [CockroachDB on Kubernetes](https://www.cockroachlabs.com/docs/v21.2/deploy-cockroachdb-with-kubernetes-insecure).
