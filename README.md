@@ -10,6 +10,7 @@ The total (all inclusive for all GCP services) cost of running the 3 node, 6 cor
 
 ![Cluster Info](images/cluster-info.png)
 ![Cost Over 10 Days](images/cost-over-10-days.png)
+![Spot Discounts](images/us-west4-spot-discounts.png)
 
 ### Who is this for?
 
