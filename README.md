@@ -184,7 +184,11 @@ kubectl delete pods --field-selector status.phase=Failed --all-namespaces
 
     While not provided in this solution, yes you can use an alternative, but Gloo Edge/Envoy is ideally suited for this use case where a high level of resiliency is needed due to the use of Spot VM cluster nodes.
 
-9. *What if I have stateful workloads such as a PostgreSQL database?*
+9. *In the Google Cloud console, why don't I don't see the deployed Load Balancer?*
+
+    The Regional HTTP Load Balancer type is not supported in the Google Cloud console at this time. You will be able to see the Backend and the Forwarding Rules however. 
+
+10. *What if I have stateful workloads such as a PostgreSQL database?*
 
     Generally speaking, you should consider having a 2nd cluster node pool dedicated to stateful workloads. However, if you're dead set on using Spot VM nodes, you might consider adding resilence to your database deployment with replicated container storage such as Portworx to [implement a form of HA with PostgreSQL](https://portworx.com/blog/ha-postgresql-kubernetes/). You might also consider database alternatives such as [CockroachDB on Kubernetes](https://www.cockroachlabs.com/docs/v21.2/deploy-cockroachdb-with-kubernetes-insecure). Or, **preferably**, [create a regional persistent disk for PostgreSQL](https://cloud.google.com/architecture/deploying-highly-available-postgresql-with-gke) for deploying highly available PostgreSQL with GKE. This will not bound any of your data to the cluster nodes as the `PersistentVolumeClaim` will be external to the cluster.
     
