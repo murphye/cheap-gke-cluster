@@ -157,3 +157,11 @@ kubectl delete pods --field-selector status.phase=Failed --all-namespaces
 5. *What GCP regions are compatible with this solution?*
 
     This solution has been tried successfully with `us-west4` and `asia-east2`, both of which have very low Spot VM instance prices. It was not compatible with `europe-central2` due to lack of the Standard networking tier. Otherwise, the best way to know is to give it a try and see if the deployment is successful.
+
+6. *What about HTTPS/TLS termination for the Regional HTTP Load Balancer?*
+
+    Implementing HTTPS (including a redirect) is possible, but not currently incorporated into this solution. There is a GitHub issue open [here](https://github.com/murphye/cheap-gke-cluster/issues/1)
+
+7. *Can I do TCP passthrough rather than HTTP for the Regional Load Balancer?*
+
+    This is not currently possible with Google's managed proxy service, but is possible with Envoy, should Google decide to support it in the future.
