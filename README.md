@@ -4,7 +4,7 @@ It is possible to run a 3 node, 6 core, GKE cluster at over a 80% discount, as l
 
 **Warning: Google Cloud only gives you 1 free GKE control plane. If you run more than 1 GKE cluster, you will incur $74.40 per month for each control plane no matter what!**
 
-### [See this blog post for a detailed explanation: TODO](http://)
+### >>> [Blog Post for an Overview of this Solution - TODO](http://) <<<
 
 The total (all inclusive for all GCP services) cost of running the 3 node, 6 core GKE cluster over a period of 10 days ($8.11). This price includes the full 90% discount for Spot VM nodes in `us-west4` during this period of time.
 
