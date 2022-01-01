@@ -79,7 +79,7 @@ terraform destroy
 
 ## How Does It Work?
 
-The overall solution is a bit complex and does use some Beta features of Google Cloud. The solution has been implemented in Terraform to make it easy to deploy, as there are many components and configurations required.
+The overall solution is a bit complex and does use some Beta features of Google Cloud. However, the solution has been implemented in Terraform so it's easy to deploy, even with the many components and configurations required.
 
 These are the main parts of the solution to achieve a high level of cost savings:
 
