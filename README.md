@@ -1,12 +1,12 @@
 # How to Run a GKE Cluster on the Cheap (As Low as $25 Per Month)
 
-What if I told you that you could run a 3 node, 6 core, GKE cluster at over a 90% discount, or only about $25 per month? In this Git repository, you can use Terraform to deploy a GKE cluster with all of the cost savings maneuvers in place to get you up and running with GKE on the cheap.
+What if I told you that you could run a 3 node, 6 core, GKE cluster at over a 80% discount, or only about $25 per month? In this Git repository, you can use Terraform to deploy a GKE cluster with all of the cost savings maneuvers in place to get you up and running with GKE on the cheap.
 
 **Warning: Google Cloud only gives you 1 free GKE control plane. If you run more than 1 GKE cluster, you will incur $74.40 per month for each control plane no matter what!**
 
 ### [See this blog post for a detailed explanation: TODO](http://)
 
-Here is the total cost of running the 3 node, 6 core GKE cluster over a period of 10 days ($8.11):
+Here is the total (all inclusive for all GCP services) cost of running the 3 node, 6 core GKE cluster over a period of 10 days ($8.11):
 ![Cluster Info](images/cluster-info.png)
 ![Cost Over 10 Days](images/cost-over-10-days.png)
 
