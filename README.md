@@ -6,7 +6,7 @@ What if I told you that you could run a 3 node, 6 core, GKE cluster at over a 90
 
 ### [See this blog post for a detailed explanation: TODO](http://)
 
-Here is the total cost of running the 3 node, 6 core GKE cluster over a period of 10 days:
+Here is the total cost of running the 3 node, 6 core GKE cluster over a period of 10 days ($8.11:
 ![Cost Over 10 Days](images/cost-over-10-days.png)
 
 ### Who is this for?
