@@ -153,3 +153,7 @@ gke-my-cluster-default-pool-8dc7ce28-cpkd   Ready    <none>   23d     v1.21.5-gk
 ```
 kubectl delete pods --field-selector status.phase=Failed --all-namespaces
 ```
+
+5. *What GCP regions are compatible with this solution?*
+
+    This solution has been tried successfully with `us-west4` and `asia-east2`, both of which have very low Spot VM instance prices. It was not compatible with `europe-central2` due to lack of the Standard networking tier. Otherwise, the best way to know is to give it a try and see if the deployment is successful.
