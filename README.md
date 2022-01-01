@@ -166,6 +166,6 @@ kubectl delete pods --field-selector status.phase=Failed --all-namespaces
 
     This is not currently possible with Google's managed proxy service, but is possible with Envoy, should Google decide to support it in the future.
 
-8. *Can I use an Ingress Controller implementation such as NGINX?*
+8. *Can I use an Ingress Controller implementation such as NGINX instead of Gloo Edge?*
 
     While not provided in this solution, yes you can use an alternative, but Gloo Edge/Envoy is ideally suited for this use case where a high level of resiliency is needed due to the use of Spot VM cluster nodes.
