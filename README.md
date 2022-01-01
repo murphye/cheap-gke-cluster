@@ -6,7 +6,7 @@ It is possible to run a 3 node, 6 core, GKE cluster for as low as $25 per month.
 
 ### >>> [Blog Post for an Overview of this Solution - TODO](http://) <<<
 
-The total (all inclusive for all GCP services) cost of running the 3 node, 6 core GKE cluster over a period of 10 days ($8.11). This price includes the full 90% discount for Spot VM nodes in `us-west4` during this period of time.
+The total (all inclusive for all GCP services) cost of running the 3 node, 6 core GKE cluster over a period of 10 days ($8.11). This price includes the full 90% discount for Spot VMs in `us-west4` during this period of time along with other cost savings maneuvers to minimize the overall cost of the GKE cluster.
 
 ![Cluster Info](images/cluster-info.png)
 ![Cost Over 10 Days](images/cost-over-10-days.png)
@@ -102,6 +102,8 @@ These are the main parts of the solution to achieve a high level of cost savings
 1. The [first GKE control plane is free](https://cloud.google.com/kubernetes-engine/pricing#cluster_management_fee_and_free_tier). This currently saves $74.40 per month.
 
 1. Deploy a [Cloud NAT](https://cloud.google.com/nat/docs/overview) gateway to enable  egress from the private GKE cluster. Additional cost is about [$1 per VM per month](https://cloud.google.com/nat/pricing) plus $0.045 per GB for data processing on egress traffic (which is primarily for pulling external Docker images). If you pull a lot of your own images, using [Artifact Registry](https://cloud.google.com/artifact-registry) would be advisable.
+
+1. Disable [Cloud Logging](https://cloud.google.com/logging) for the GKE cluster. With the default settings, the Free Tier logging limits will be overcome within several days therefore adding significant additional expense. 
 
 Terraform configs (`.tf`) are commented with specific details and references to explain how the deployment works and why. Also see the blog post for specifics.
 
