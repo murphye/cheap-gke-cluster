@@ -144,4 +144,12 @@ gke-my-cluster-default-pool-8dc7ce28-cpkd   Ready    <none>   23d     v1.21.5-gk
 
     Having a 100% Spot VM node cluster is not recommended for critical production workloads. You might consider having 2 node pools and spread the workloads across both non-spot and spot nodes. You may consider using [Pod Topology Spread Constraints](https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/) where the `topologyKey` could be `cloud.google.com/gke-spot`. Of course, using non-spot nodes will result in additional cost, but having a portion of your cluster be spot nodes will save significant amounts of money compared to an entirely non-spot cluster.
 
-    Generally speaking, the solution presented in this GitHub repo is only for non-production purposes only.
+    Generally speaking, the solution presented in this GitHub repo is for non-production purposes only.
+
+4. *Why do I have `Terminated` pods and how can I get rid of them?*
+
+    When a Spot VM node shuts down, pods residing on the node will move to a `Terminated` state. Kubernetes [doesn't currently garbage collect](https://github.com/kubernetes/kubernetes/issues/99986) these `Terminated`/`Failed` pods. You may periodically delete these pods with the following command:
+
+```
+kubectl delete pods --field-selector status.phase=Failed --all-namespaces
+```
