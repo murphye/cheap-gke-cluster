@@ -10,7 +10,7 @@ This solution is primarily for people learning Kubernetes and GKE, or just peopl
 
 The solution, and its cost savings, is scalable to a larger cluster. It is conceivable that cost-conscious organizations may be interested in the techniques used in this solution as well. Just be aware of the drawbacks! See the blog post for more information.
 
-## Setup to Deploy
+## Prepare to Deploy the GKE Cluster
 
 It is assumed that you already have `gcloud` installed and initialized for use with your project. If not, follow the instructions on this [page](https://cloud.google.com/sdk/docs/install).
 
@@ -83,9 +83,14 @@ The overall solution is a bit complex and does use some Beta features of Google 
 
 These are the main parts of the solution to achieve a high level of cost savings:
 
-1. Use a private GKE cluster using only Spot VM instances as the cluster nodes. This will save you up to 90% on the cost of VMs, depending on the region. This could save you up to $150 per month for GKE node VMs for a 3 node, 6 core cluster.
-2. Use a Regional (rather than Global) HTTP Load Balancer which is currently free as a Beta preview. Additional costs may be incurred in the future. This currently saves you $18.26 per month.
-3. The 1st GKE control plane is free. This currently saves $74.40 per month.
+1. Use a private, [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg#create_a-native_cluster), [GKE cluster using only Spot VM instances](https://cloud.google.com/kubernetes-engine/docs/concepts/spot-vms) as the cluster nodes. This will save you up to 90% on the cost of VMs, depending on the GCP region. This could save you up to $150 per month for GKE node VMs for a 3 node, 6 core cluster.
+1. Use a [Regional (rather than Global) HTTP Load Balancer](https://cloud.google.com/load-balancing/docs/https) which is currently free as a Beta preview. Additional costs may be incurred in the future. This currently saves you $18.26 per month.
+
+    a. Attach the [Regional HTTP Load Balancer to a standalone NEG](https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg#how_to) to route traffic directly from the Load Balancer to the GKE ingress gateway pods to achieve container-native load balancing.
+
+    b. Use [Gloo Edge](https://github.com/solo-io/gloo) for an Envoy-based GKE ingress gateway that provides advanced routing capabilities to services running in the cluster. Gloo Edge also provides reliable traffic routing to mitigate potential errors resulting from Spot VM node shutdowns.
+
+1. The [first GKE control plane is free](https://cloud.google.com/kubernetes-engine/pricing#cluster_management_fee_and_free_tier). This currently saves $74.40 per month.
 
 Terraform configs (`.tf`) are commented with specific details and references to explain how the deployment works and why. Also see the blog post for specifics.
 
