@@ -1,4 +1,4 @@
-# How to Run a GKE Cluster on the Cheap (As Low as $25 Per Month)
+# How to Run a GKE Cluster on the Cheap (Under $25 Per Month)
 
 It is possible to run a 3 node, 6 core, GKE cluster for as low as $25 per month. In this Git repository, you can use Terraform to deploy a GKE cluster with all of the cost savings maneuvers in place to get you up and running with GKE on the cheap!
 
