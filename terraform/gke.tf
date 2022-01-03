@@ -54,7 +54,7 @@ resource "google_container_cluster" "default" {
   }
 
   default_snat_status {
-    # More infor on why sNAT needs to be disabled: https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips#enable_pupis
+    # More info on why sNAT needs to be disabled: https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips#enable_pupis
     # This applies to VPC-native GKE clusters
     disabled = true
   }
