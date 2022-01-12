@@ -139,13 +139,17 @@ If you have a microservice architecture with microservices deployed across nodes
 
 ## Frequently Asked Questions
 
-1. *How long do the Spot VM nodes run?*
+1. *Is this GKE cluster, given the drawbacks of Spot VM nodes, really all that useful?*
+
+    Absolutely, it's useful. This is a real GKE cluster with 3 nodes, 6 cores, and 24 GB of RAM running at minimal cost. This is great for people learning Kubernetes that need to run non-trivial workloads to better understand how to use Kubernetes in a real, production, cloud environment, without the high cost and surprise, hidden charges.
+
+2. *How long do the Spot VM nodes run?*
 
     The longest period of time that I have seen is 23 days in `us-west4`. Most typically will run for several days.
 
-2. *Will only one Spot VM node be replaced at a time?*
+3. *Will only one Spot VM node be replaced at a time?*
 
-    There is no guaranteee when nodes or how many of the nodes will be replaced. Here is an example where 2 of the 3 nodes were replaced at the same time, as they both have the same age. Unfortunately, if your application workload only resided on those 2 nodes, it would have been temporarily offline until new pods spun up to replace them.
+    There is no guarantee when nodes or how many of the nodes will be replaced. Here is an example where 2 of the 3 nodes were replaced at the same time, as they both have the same age. Unfortunately, if your application workload only resided on those 2 nodes, it would have been temporarily offline until new pods spun up to replace them.
 
 ```
 NAME                                        STATUS   ROLES    AGE     VERSION
@@ -154,13 +158,13 @@ gke-my-cluster-default-pool-8dc7ce28-k3d3   Ready    <none>   4h14m   v1.21.5-gk
 gke-my-cluster-default-pool-8dc7ce28-cpkd   Ready    <none>   23d     v1.21.5-gke.1302
 ```
 
-3. *How can I guarantee that my applications will stay online if multiple Spot VM nodes are replaced at the same time?*
+4. *How can I guarantee that my applications will stay online if multiple Spot VM nodes are replaced at the same time?*
 
     Having a 100% Spot VM node cluster is not recommended for critical production workloads. You might consider having 2 node pools and spread the workloads across both non-spot and spot nodes. You may consider using [Pod Topology Spread Constraints](https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/) where the `topologyKey` could be `cloud.google.com/gke-spot`. Of course, using non-spot nodes will result in additional cost, but having a portion of your cluster be spot nodes will save significant amounts of money compared to an entirely non-spot cluster.
 
     Generally speaking, the solution presented in this GitHub repo is for non-production purposes only.
 
-4. *Why do I have `Terminated` pods and how can I get rid of them?*
+5. *Why do I have `Terminated` pods and how can I get rid of them?*
 
     When a Spot VM node shuts down, pods residing on the node will move to a `Terminated` state. Kubernetes [doesn't currently garbage collect](https://github.com/kubernetes/kubernetes/issues/99986) these `Terminated`/`Failed` pods until there are 12,500 of them. You may periodically delete these pods with the following command:
 
@@ -168,27 +172,27 @@ gke-my-cluster-default-pool-8dc7ce28-cpkd   Ready    <none>   23d     v1.21.5-gk
 kubectl delete pods --field-selector status.phase=Failed --all-namespaces
 ```
 
-5. *What GCP regions are compatible with this solution?*
+6. *What GCP regions are compatible with this solution?*
 
     This solution has been tried successfully with `us-west4` and `asia-east2`, both of which have very low Spot VM instance prices. It was not compatible with `europe-central2` due to lack of the Standard networking tier. Otherwise, the best way to know is to give it a try and see if the deployment is successful.
 
-6. *What about HTTPS/TLS termination for the Regional HTTP Load Balancer?*
+7. *What about HTTPS/TLS termination for the Regional HTTP Load Balancer?*
 
     Implementing HTTPS (including a redirect) is possible, but not currently incorporated into this solution. There is a GitHub issue open [here](https://github.com/murphye/cheap-gke-cluster/issues/1) with details. 
 
-7. *Can I do TCP passthrough rather than HTTP for the Regional Load Balancer?*
+8. *Can I do TCP passthrough rather than HTTP for the Regional Load Balancer?*
 
     This is not currently possible with Google's managed proxy service, but is possible with Envoy, should Google decide to support it in the future.
 
-8. *Can I use an Ingress Controller implementation such as NGINX instead of Gloo Edge?*
+9. *Can I use an Ingress Controller implementation such as NGINX instead of Gloo Edge?*
 
     While not provided in this solution, yes you can use an alternative, but Gloo Edge/Envoy is ideally suited for this use case where a high level of resiliency is needed due to the use of Spot VM cluster nodes.
 
-9. *In the Google Cloud console, why don't I don't see the deployed Load Balancer?*
+10. *In the Google Cloud console, why don't I don't see the deployed Load Balancer?*
 
     The Regional HTTP Load Balancer type is not supported in the Google Cloud console at this time. However, you will be able to see the Backend and the Forwarding Rules (Frontend). 
 
-10. *What if I have stateful workloads such as a PostgreSQL database?*
+11. *What if I have stateful workloads such as a PostgreSQL database?*
 
     Generally speaking, you should consider having a 2nd cluster node pool dedicated to stateful workloads. However, if you're dead set on using Spot VM nodes, you might consider adding resilence to your database deployment with replicated container storage such as Portworx to [implement a form of HA with PostgreSQL](https://portworx.com/blog/ha-postgresql-kubernetes/). You might also consider database alternatives such as [CockroachDB on Kubernetes](https://www.cockroachlabs.com/docs/v21.2/deploy-cockroachdb-with-kubernetes-insecure). Or, **preferably**, [create a regional persistent disk for PostgreSQL](https://cloud.google.com/architecture/deploying-highly-available-postgresql-with-gke) for deploying highly available PostgreSQL with GKE. This will not bound any of your data to the cluster nodes as the `PersistentVolumeClaim` will be external to the cluster.
     
