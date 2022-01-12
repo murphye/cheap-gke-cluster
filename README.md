@@ -6,7 +6,7 @@ It is possible to run a 3 node, 6 core, 24 GB RAM GKE cluster for under $25 per 
 
 ### >>> [Blog Post for an Overview of this Solution - TODO](http://) <<<
 
-The total (all inclusive for all GCP services) cost of running the 3 node, 6 core GKE cluster over a period of 10 days ($8.11). This price includes the full 90% discount for Spot VMs in `us-west4` during this period of time along with other cost savings maneuvers to minimize the overall cost of the GKE cluster.
+The total (all inclusive for all GCP services) cost of running the 3 node, 6 core GKE cluster over a period of 10 days ($7.31). This price includes the full 90% discount for Spot VMs in `us-west4` during this period of time along with other cost savings maneuvers to minimize the overall cost of the GKE cluster.
 
 ![Cluster Info](images/cluster-info.png)
 ![Cost Over 10 Days](images/cost-over-10-days.png)
