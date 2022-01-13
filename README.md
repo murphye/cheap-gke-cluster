@@ -70,8 +70,6 @@ kubectl apply -f ../petstore.yaml
 kubectl apply -f ../virtualservice.yaml
 ```
 
-Now, wait about 1 minute for everything to get deployed and configured.
-
 Next, get the IP Address of the load balancer for running the `curl` command to verify deployment. Change the `my-static-ip` if it was changed in the `terraform.tfvars`
 ```bash
 ipaddress=$(gcloud compute addresses describe my-static-ip --format="value(address)")
@@ -98,6 +96,8 @@ terraform destroy
 gcloud compute network-endpoint-groups delete ingressgateway --quiet
 terraform destroy --auto-approve
 ```
+
+Because the `ingressgateway` NEG is not part of the Terraform inventory, it needs to be deleted manually. Ignore the first error from `terraform destroy`. All 3 commands will likely need to be run.
 
 ## How Does It Work?
 
