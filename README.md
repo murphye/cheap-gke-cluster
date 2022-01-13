@@ -84,7 +84,7 @@ curl http://$ipaddress
 [{"id":1,"name":"Dog","status":"available"},{"id":2,"name":"Cat","status":"pending"}]
 ```
 
-If you see a HTTP response of `no healthy upstream`, either you need to give everything a moment to finish deploying, or there is something else wrong. Please make sure all of the pods are running in the `default` namespace and the `gloo-system` namespace as a first step to diagnose.
+If you see a HTTP response of `no healthy upstream`, either you need to give everything a moment to finish deploying, or there is something else wrong. Please make sure all of the pods are `Running` in the `default` namespace and the `gloo-system` namespace as a first step to diagnose.
 
 ## Tear Down the GKE Cluster
 
