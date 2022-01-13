@@ -12,7 +12,10 @@ The total (all inclusive for all GCP services) cost of running the 3 node, 6 cor
 <p align="center"><bold>Image 1. 3 Node Cluster, with a total of 24 GB of RAM, and 6 cores.</bold></p>
 
 ![Cost Over 10 Days](images/cost-over-10-days.png)
+<p align="center"><bold>Image 2. Total (all inclusive) cost of running the GKE cluster over 10 days.</bold></p>
+
 ![Spot Discounts](images/us-west4-spot-discounts.png)
+<p align="center"><bold>Image 3. Spot VM pricing in us-west4.</bold></p>
 
 ### Who is this for?
 
