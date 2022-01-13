@@ -31,7 +31,7 @@ It is assumed that you already have `gcloud` installed and initialized for use w
 
 Terraform is required to run the deployment on your local machine. On a Mac you can use Homebrew by running these commands:
 
-```
+```bash
 brew tap hashicorp/tap
 brew install hashicorp/tap/terraform
 ```
@@ -55,7 +55,7 @@ You may also change the region you choose to deploy. Each GCP region has differe
 
 Now you can run Terraform to deploy GKE and all of the supporting components needed for this solution to work.
 
-```
+```bash
 cd terraform
 terraform init
 terraform apply --auto-approve
