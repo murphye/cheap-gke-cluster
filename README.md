@@ -40,13 +40,13 @@ brew install hashicorp/tap/terraform
 
 Change `terraform.tfvars` to use your Google Cloud `PROJECT_ID`. You can find your `PROJECT_ID` by running this command:
 
-```
+```bash
 gcloud projects list
 ```
 
 You should also update your current project for `gcloud` if it's not set to the one that you intend to deploy the cluster to:
 
-```
+```bash
 gcloud config set project REPLACE_WITH_YOUR_PROJECT_ID
 ```
 You may also change the region you choose to deploy. Each GCP region has different pricing for VM Spot instances. See this [page](https://cloud.google.com/compute/vm-instance-pricin) for pricing details.
@@ -65,7 +65,7 @@ Terraform will take several minutes to run. Please be patient! A lot of things a
 
 Next, you must deploy the Petstore sample application and a `VirtualService` to route traffic to that application:
 
-```
+```bash
 kubectl apply -f ../petstore.yaml
 kubectl apply -f ../virtualservice.yaml
 ```
@@ -73,12 +73,12 @@ kubectl apply -f ../virtualservice.yaml
 Now, wait about 1 minute for everything to get deployed and configured.
 
 Next, get the IP Address of the load balancer for running the `curl` command to verify deployment. Change the `my-static-ip` if it was changed in the `terraform.tfvars`
-```
+```bash
 ipaddress=$(gcloud compute addresses describe my-static-ip --format="value(address)")
 ```
 
 Run the curl command. You should see JSON data from the Petstore application.
-```
+```bash
 curl http://$ipaddress
 
 [{"id":1,"name":"Dog","status":"available"},{"id":2,"name":"Cat","status":"pending"}]
