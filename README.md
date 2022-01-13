@@ -4,7 +4,7 @@ It is possible to run a 3 node, 6 core, 24 GB RAM GKE cluster for under $25 per 
 
 **Warning: Google Cloud only gives you 1 free GKE control plane. If you run more than 1 GKE cluster, you will incur $74.40 per month for each control plane no matter what!**
 
-### >>> [Blog Post for an Overview of this Solution - TODO](http://) <<<
+### >>> [See article on **The New Stack** for an Overview of this Solution](https://thenewstack.io/run-a-google-kubernetes-engine-cluster-for-under-25-month/) <<<
 
 The total (all inclusive for all GCP services) cost of running the 3 node, 6 core GKE cluster over a period of 30 days is $21.93, plus minimal charges for data ingress through a NAT gateway. This price includes the full 90% discount for Spot VMs in `us-west4` during this period of time along with other cost savings maneuvers to minimize the overall cost of the GKE cluster.
 
