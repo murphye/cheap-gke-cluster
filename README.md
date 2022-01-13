@@ -195,7 +195,9 @@ kubectl delete pods --field-selector status.phase=Failed --all-namespaces
 
 10. *In the Google Cloud console, why don't I don't see the deployed Load Balancer?*
 
-    The Regional HTTP Load Balancer type is not supported in the Google Cloud console at this time. However, you will be able to see the Backend and the Forwarding Rules (Frontend). 
+    The Regional HTTP Load Balancer type is not supported in the Google Cloud console at this time. However, you will be able to see the Backend and the Forwarding Rules (Frontend), as shown:
+
+    ![Cluster Info](images/frontends.png)
 
 11. *What if I have stateful workloads such as a PostgreSQL database?*
 
