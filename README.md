@@ -146,7 +146,7 @@ If you have a microservice architecture with microservices deployed across nodes
 
 1. *Is this GKE cluster, given the drawbacks of Spot VM nodes, really all that useful?*
 
-    Absolutely, it's useful. This is a real GKE cluster with 3 nodes, 6 cores, and 24 GB of RAM running at minimal cost. This is great for people learning Kubernetes that need to run non-trivial workloads to better understand how to use Kubernetes in a real, production, cloud environment, without the high cost and surprise, hidden charges.
+    Absolutely, it's useful. This is a real GKE cluster with 3 nodes, 6 cores, and 24 GB of RAM running at minimal cost. This is great for people learning Kubernetes that need to run non-trivial workloads to better understand how to use Kubernetes in a real cloud environment, without the high cost and surprise, hidden charges.
 
 2. *How long do the Spot VM nodes run?*
 
