@@ -151,7 +151,7 @@ If you have a microservice architecture with microservices deployed across nodes
 
 1. *Is this GKE cluster, given the drawbacks of Spot VM nodes, really all that useful?*
 
-    Absolutely, it's useful. This is a real GKE cluster with 3 nodes, 6 cores, and 24 GB of RAM running at minimal cost. This is great for people learning Kubernetes that need to run non-trivial workloads to better understand how to use Kubernetes in a real, production, cloud environment, without the high cost and surprise, hidden charges.
+    Absolutely, it's useful. This is a real GKE cluster with 3 nodes, 6 cores, and 24 GB of RAM running at minimal cost. This is great for people learning Kubernetes that need to run non-trivial workloads to better understand how to use Kubernetes in a real cloud environment, without the high cost and surprise, hidden charges.
 
 2. *How long do the Spot VM nodes run?*
 
@@ -176,7 +176,7 @@ gke-my-cluster-default-pool-8dc7ce28-cpkd   Ready    <none>   23d     v1.21.5-gk
 
 5. *Why do I have `Terminated` pods and how can I get rid of them?*
 
-    When a Spot VM node shuts down, pods residing on the node will move to a `Terminated` state. Kubernetes [doesn't currently garbage collect](https://github.com/kubernetes/kubernetes/issues/99986) these `Terminated`/`Failed` pods until there are 12,500 of them. You may periodically delete these pods with the following command:
+    When a Spot VM node shuts down, pods residing on the node will move to a `Terminated` state. These `Terminated` pods do not consume resources and are simply replaced with new pods. Kubernetes [doesn't currently garbage collect](https://github.com/kubernetes/kubernetes/issues/99986) these `Terminated`/`Failed` pods until there are 12,500 of them! You may periodically delete these pods with the following command:
 
 ```
 kubectl delete pods --field-selector status.phase=Failed --all-namespaces
