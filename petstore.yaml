@@ -23,7 +23,7 @@ spec:
           name: http
       affinity:
         # Because the cluster uses spot nodes that can be shut down at any time, having at least
-        # 2 replicas with antiAffinity is needed for application resilency when a node shuts down
+        # 2 replicas with antiAffinity is recommended for application resilency when a node shuts down
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
