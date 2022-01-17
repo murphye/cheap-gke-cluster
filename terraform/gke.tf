@@ -3,6 +3,13 @@
 # See links in the comments below for specifics. This page is a good place to understand the overall solution: 
 # https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg
 
+provider "google-beta" {
+  # Run 'gcloud auth application-default login' to get credentials.json
+  # credentials = "${file("credentials.json")}"
+  project     = var.project_id
+  region      = var.region
+}
+
 resource "google_compute_subnetwork" "default" {
   depends_on    = [google_compute_network.default]
   name          = "${var.gke_cluster_name}-subnet"
