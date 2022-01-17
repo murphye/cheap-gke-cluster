@@ -49,7 +49,7 @@ You should also update your current project for `gcloud` if it's not set to the 
 ```bash
 gcloud config set project REPLACE_WITH_YOUR_PROJECT_ID
 ```
-You may also change the region you choose to deploy. Each GCP region has different pricing for VM Spot instances. See this [page](https://cloud.google.com/compute/vm-instance-pricin) for pricing details.
+You may also change the region you choose to deploy. Each GCP region has different pricing for VM Spot instances. See this [page](https://cloud.google.com/compute/vm-instance-pricing) for pricing details.
 
 ## Deploy the GKE Cluster
 
