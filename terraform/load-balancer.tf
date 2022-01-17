@@ -133,3 +133,10 @@ resource "google_compute_firewall" "default" {
   target_tags = ["${var.gke_cluster_name}"]
   direction = "INGRESS"
 }
+resource "null_resource" "decomission_ingressgateway" {
+  provisioner "local-exec" {
+    when = destroy
+    # Delete ingressgateway on destroy
+    command = "gcloud compute network-endpoint-groups delete ingressgateway --quiet"
+  }
+}
