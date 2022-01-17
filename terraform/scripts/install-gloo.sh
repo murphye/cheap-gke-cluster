@@ -5,6 +5,6 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 helm repo add gloo https://storage.googleapis.com/solo-public-helm
 helm repo update
 
-helm install --dry-run gloo gloo/gloo \
+helm install gloo gloo/gloo \
   --namespace gloo-system \
   -f "$DIR/values.yaml"
