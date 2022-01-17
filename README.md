@@ -93,11 +93,7 @@ When you are done, you can remove everything from Google Cloud with these comman
 
 ```
 terraform destroy
-gcloud compute network-endpoint-groups delete ingressgateway --quiet
-terraform destroy --auto-approve
 ```
-
-Because the `ingressgateway` NEG is not part of the Terraform inventory, it needs to be deleted manually. Ignore the first error from `terraform destroy`. All 3 commands will likely need to be run.
 
 ## How Does It Work?
 
