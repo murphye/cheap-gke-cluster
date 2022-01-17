@@ -10,3 +10,4 @@ machine_type     = "e2-standard-2"
 disk_size        = 20
 network_name     = "my-network"
 ip_address_name  = "my-static-ip"
+helm_local_exec  = false
