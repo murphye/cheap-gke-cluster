@@ -37,7 +37,7 @@ variable "ip_address_name" {
 }
 
 variable "helm_local_exec" {
-  description = "The name of the static IP Address for the load balancer"
+  description = "Use locally installed helm via exec if true or helm terraform provider if false (default false)"
 }
 
 resource "google_compute_network" "default" {
