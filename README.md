@@ -84,10 +84,12 @@ Run the curl command. You should see JSON data from the Petstore application.
 If you see a HTTP response of `no healthy upstream`, either you need to wait a bit longer (up to 2 minutes), or there is something else wrong. Please make sure all of the pods are running in the `default` namespace and the `gloo-system` namespace as a first step to diagnose.
 
 ```bash
-curl http://$ipaddress
+curl -L -k  http://$ipaddress
 
 [{"id":1,"name":"Dog","status":"available"},{"id":2,"name":"Cat","status":"pending"}]
 ```
+
+For `curl`, `-L` will follow HTTP redirects, and `-k` allows self-signed certificates, if you have https enabled for your installation in `terraform.tfvars` and are using the `self-signed` certificate in `/certs`.
 
 ## Tear Down the GKE Cluster
 
@@ -95,8 +97,6 @@ When you are done, you can remove everything from Google Cloud with these comman
 
 ```
 terraform destroy
-gcloud compute network-endpoint-groups delete ingressgateway --quiet
-terraform destroy --auto-approve
 ```
 
 Because the `ingressgateway` NEG is not part of the Terraform inventory, it needs to be deleted manually. Ignore the first error from `terraform destroy`. All 3 commands will likely need to be run.

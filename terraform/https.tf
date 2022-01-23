@@ -1,4 +1,4 @@
-resource "google_compute_forwarding_rule" "https" {
+resource "google_compute_forwarding_rule" "redirect" {
   depends_on = [google_compute_subnetwork.proxy]
   count      = var.https ? 1 : 0
   name       = "l7-xlb-forwarding-rule-http-redirect"
@@ -14,10 +14,10 @@ resource "google_compute_forwarding_rule" "https" {
   network_tier          = "STANDARD"
 }
 
-resource "google_compute_forwarding_rule" "primary" {
+resource "google_compute_forwarding_rule" "https" {
   depends_on = [google_compute_subnetwork.proxy]
   count      = var.https ? 1 : 0
-  name       = "l7-xlb-forwarding-rule-http-redirect"
+  name       = "l7-xlb-forwarding-rule-https"
   project    = google_compute_subnetwork.default.project
   region     = google_compute_subnetwork.default.region
   ip_protocol           = "TCP"
@@ -47,16 +47,13 @@ resource "google_compute_region_url_map" "redirect" {
   }
 }
 
-resource "google_compute_ssl_certificate" "default" { 
+resource "google_compute_region_ssl_certificate" "default" { 
   project = google_compute_subnetwork.default.project
+  region  = google_compute_subnetwork.default.region
   name        = var.ssl_cert_name
-  description = "a description"
-  private_key = file("tls.key")
-  certificate = file("tls.crt")
-
-  lifecycle {
-    create_before_destroy = true
-  }
+  description = "SSL certificate for l7-xlb-proxy-https"
+  private_key = file(var.ssl_cert_key)
+  certificate = file(var.ssl_cert_crt)
 }
 
 # https://registry.terraform.io/providers/hashicorp/google-beta/latest/docs/resources/compute_ssl_certificate#example-usage---ssl-certificate-target-https-proxies
@@ -65,5 +62,5 @@ resource "google_compute_region_target_https_proxy" "default" {
   region  = google_compute_subnetwork.default.region
   name    = "l7-xlb-proxy-https"
   url_map = google_compute_region_url_map.default.id
-  ssl_certificates = [google_compute_ssl_certificate.default.id]
+  ssl_certificates = [google_compute_region_ssl_certificate.default.id]
 }

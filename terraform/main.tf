@@ -44,19 +44,18 @@ variable "https" {
   description = "Whether to set up the load balancer with HTTPS or not"
 }
 
+variable "ssl_cert_crt" {
+  description = "Path to the SSL certificate .crt"
+}
+
+variable "ssl_cert_key" {
+  description = "Path to the SSL certificate private .key"
+}
+
 resource "google_compute_network" "default" {
-  depends_on = [null_resource.delete_ingressgateway]
   name                    = var.network_name
   auto_create_subnetworks = "false"
   project = var.project_id
   # Everything in this solution is deployed regionally
   routing_mode = "REGIONAL"
-}
-
-resource "null_resource" "delete_ingressgateway" {
-  provisioner "local-exec" {
-    when    = destroy
-    # Delete ingressgateway on destroy
-    command = "gcloud compute network-endpoint-groups delete ingressgateway --quiet"
-  }
 }
