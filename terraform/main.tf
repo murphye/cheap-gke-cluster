@@ -37,9 +37,17 @@ variable "ip_address_name" {
 }
 
 resource "google_compute_network" "default" {
+  depends_on = [null_resource.delete_ingressgateway]
   name                    = var.network_name
   auto_create_subnetworks = "false"
   project = var.project_id
   # Everything in this solution is deployed regionally
   routing_mode = "REGIONAL"
+}
+
+resource "null_resource" "delete_ingressgateway" {
+  provisioner "local-exec" {
+    # Delete ingressgateway on destroy
+    command = "gcloud compute network-endpoint-groups delete ingressgateway --quiet"
+  }
 }

@@ -27,13 +27,15 @@ The solution, and its cost savings, is scalable to a larger cluster. It is conce
 
 It is assumed that you already have `gcloud` installed and initialized for use with your project. If not, follow the instructions on this [page](https://cloud.google.com/sdk/docs/install).
 
-### Install Terraform
+### Install Terraform and Helm
 
-Terraform is required to run the deployment on your local machine. On a Mac you can use Homebrew by running these commands:
+Terraform and Helm are required to run the deployment on your local machine. On a Mac you can use Homebrew by running these commands:
 
 ```bash
 brew tap hashicorp/tap
 brew install hashicorp/tap/terraform
+
+brew install helm
 ```
 
 ### Configure Terraform
@@ -127,7 +129,11 @@ Terraform configs (`.tf`) are commented with specific details and references to 
 
 [Gloo Edge](https://docs.solo.io/gloo-edge/master/) provides powerful traffic routing capabilities that go far beyond the standard [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/). As Gloo Edge uses Envoy, capabilities such as retries help improve the resiliency of routing to applications in your cluster that is using Spot VM node instances.
 
-It's beneficial, but not required, to [install `glooctl`](https://docs.solo.io/gloo-edge/master/installation/glooctl_setup/) to work with Gloo Edge.
+It's beneficial, but not required, to [install `glooctl`](https://docs.solo.io/gloo-edge/master/installation/glooctl_setup/) to work with Gloo Edge. Here is how you install it on a Mac with Homebrew.
+
+```
+brew install glooctl
+```
 
 ### Update Config and Deploy Another Application
 
