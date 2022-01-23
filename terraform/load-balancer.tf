@@ -1,3 +1,5 @@
+# TODO: count = var.http ? 1 : 0
+
 # This solution deploys a Regional External HTTP Load Balancer that routes traffic from the Internet to
 # the ingress gateway for the GKE Cluster. The Regional External HTTP Load Balancer uses Envoy as a 
 # managed proxy deployment. More information on the Regional External HTTP Load Balancer can be found here:
@@ -18,8 +20,9 @@ resource "google_compute_subnetwork" "proxy" {
   role          = "ACTIVE"
 }
 
-resource "google_compute_forwarding_rule" "primary" {
+resource "google_compute_forwarding_rule" "http" {
   depends_on = [google_compute_subnetwork.proxy]
+  count      = var.https ? 0 : 1
   name       = "l7-xlb-forwarding-rule-http"
   project    = google_compute_subnetwork.default.project
   region     = google_compute_subnetwork.default.region

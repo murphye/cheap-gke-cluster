@@ -36,8 +36,12 @@ variable "ip_address_name" {
   description = "The name of the static IP Address for the load balancer"
 }
 
-variable "helm_local_exec" {
-  description = "Use locally installed helm via exec if true or helm terraform provider if false (default false)"
+variable "ssl_cert_name" {
+  description = "The name of the SSL certificate for the load balancer"
+}
+
+variable "https" {
+  description = "Whether to set up the load balancer with HTTPS or not"
 }
 
 resource "google_compute_network" "default" {
@@ -51,6 +55,7 @@ resource "google_compute_network" "default" {
 
 resource "null_resource" "delete_ingressgateway" {
   provisioner "local-exec" {
+    when    = destroy
     # Delete ingressgateway on destroy
     command = "gcloud compute network-endpoint-groups delete ingressgateway --quiet"
   }
