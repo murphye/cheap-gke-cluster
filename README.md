@@ -53,6 +53,18 @@ gcloud config set project REPLACE_WITH_YOUR_PROJECT_ID
 ```
 You may also change the region you choose to deploy. Each GCP region has different pricing for VM Spot instances. See this [page](https://cloud.google.com/compute/vm-instance-pricing) for pricing details.
 
+### Optional: Enable HTTPS
+
+If you choose to enable HTTPS (with HTTP redirect) at the load balancer, you can enable this in the `terraform.tfvars` by setting `https` to `true`. With the default configuration, a self-signed certificate is used. You can also use your own certificate as well by adding your own `.crt` and `.key` and configuring with the path to the files in `terraform.tfvars`.
+
+## Enable the GKE API
+
+If you have never used GKE previously on your account, the GKE API needs to be enabled first. This can be done using the following command:
+
+```
+gcloud services enable container.googleapis.com
+```
+
 ## Deploy the GKE Cluster
 
 Now you can run Terraform to deploy GKE and all of the supporting components needed for this solution to work.
@@ -77,14 +89,22 @@ Next, get the IP Address of the load balancer for running the `curl` command to 
 ipaddress=$(gcloud compute addresses describe my-static-ip --format="value(address)")
 ```
 
-**IMPORTANT: WAIT APPROXIMATELY 2 MINUTES FOR THE `ingressgateway` NEG TO BE CREATED AND THE LOAD BALANCER TO BECOME HEALTHY**
+**IMPORTANT: WAIT UP TO 2 MINUTES FOR THE `ingressgateway` NEG TO BE CREATED AND THE LOAD BALANCER TO BECOME HEALTHY**
 
 Run the curl command. You should see JSON data from the Petstore application.
 
 If you see a HTTP response of `no healthy upstream`, either you need to wait a bit longer (up to 2 minutes), or there is something else wrong. Please make sure all of the pods are running in the `default` namespace and the `gloo-system` namespace as a first step to diagnose.
 
 ```bash
-curl -L -k  http://$ipaddress
+curl -i -L -k  http://$ipaddress
+
+HTTP/1.1 200 OK
+content-type: application/xml
+date: Sun, 23 Jan 2022 21:41:52 GMT
+content-length: 86
+x-envoy-upstream-service-time: 0
+server: envoy
+via: 1.1 google
 
 [{"id":1,"name":"Dog","status":"available"},{"id":2,"name":"Cat","status":"pending"}]
 ```

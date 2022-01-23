@@ -2,3 +2,16 @@
 terraform.tfstate*
 .DS_Store
 credentials.json
+
+*.crt
+*.cer
+*.ca-bundle
+*.p7b
+*.p7c
+*.p7s
+*.pem
+*.key
+*.keystore
+*.jks
+*.p12
+*.pfx
