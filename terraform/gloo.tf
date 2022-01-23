@@ -8,7 +8,12 @@ provider "helm" {
   }
 }
 
-resource "helm_release" "gloo" {
+resource "null_resource" "gloo" {
+  depends_on = [helm_release.gloo_tf, null_resource.gloo_local]
+}
+
+resource "helm_release" "gloo_tf" {
+  count = var.helm_local_exec ? 0 : 1
   depends_on = [null_resource.local_k8s_context]
   name       = "gloo-edge"
   # gloo-system is the standard namespace for Gloo Edge
@@ -47,5 +52,15 @@ resource "helm_release" "gloo" {
     {"exposed_ports": {"80":{"name": "ingressgateway"}}}
     EOT
     # Helm is picky about string inputs, needed to escape . and put the JSON in a string block.
+  }
+}
+
+resource "null_resource" "gloo_local" {
+
+  count = var.helm_local_exec ? 1 : 0
+  depends_on = [null_resource.local_k8s_context]
+  provisioner "local-exec" {
+    # Update your local gcloud and kubectl credentials for the newly created cluster
+    command = "./scripts/install-gloo.sh"
   }
 }

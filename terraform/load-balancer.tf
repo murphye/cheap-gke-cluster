@@ -75,7 +75,7 @@ resource "google_compute_region_url_map" "default" {
 
 resource "google_compute_region_backend_service" "default" {
   # This cannot be deployed until the ingress gateway is deployed and the standalone NEG is automatically created
-  depends_on = [helm_release.gloo]
+  depends_on = [null_resource.gloo]
   project = google_compute_subnetwork.default.project
   region  = google_compute_subnetwork.default.region
   name        = "l7-xlb-backend-service-http"
