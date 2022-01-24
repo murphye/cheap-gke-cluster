@@ -1,4 +1,4 @@
-project_id  = "PROJECT_ID"
+project_id  = "REPLACE_WITH_YOUR_PROJECT_ID"
 
 # Pick a region with low spot VM prices. us-west4 is currently the cheapest.
 # Not all regions will work, some don't support STANDARD network tier.

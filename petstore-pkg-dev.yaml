@@ -16,7 +16,7 @@ spec:
         app: petstore
     spec:
       containers:
-      - image: us-west4-docker.pkg.dev/murphye/my-repo/petstore-example:latest
+      - image: us-west4-docker.pkg.dev/REPLACE_WITH_YOUR_PROJECT_ID/REPLACE_WITH_YOUR_REPO/petstore-example:latest
         name: petstore
         ports:
         - containerPort: 8080

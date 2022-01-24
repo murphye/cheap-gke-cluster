@@ -181,16 +181,16 @@ First, make sure the Artifact Registry API is enabled for your project:
 gcloud services enable artifactregistry.googleapis.com
 ```
 
-You may use the Google Cloud console, or use the `gcloud` command line to create a repository. Replace `my-repo` with your desired repository name. Replace `us-west4` with your desired Google Cloud region. You may also consider having a global repo, see the Artifact Repository docs for more info.
+You may use the Google Cloud console, or use the `gcloud` command line to create a repository. Replace `my-repo` with your desired repository name. You may also consider having a global repo, see the Artifact Repository docs for more info.
 
 ```
-gcloud artifacts repositories create my-repo --repository-format=docker --location=us-west4 --description="My Docker repository"
+gcloud artifacts repositories create REPLACE_WITH_YOUR_REPO --repository-format=docker --location=REPLACE_WITH_YOUR_REGION --description="My Docker repository"
 ```
 
 Next, get your Artifact Registry Docker credentials:
 
 ```
-gcloud auth configure-docker us-west4-docker.pkg.dev
+gcloud auth configure-docker REPLACE_WITH_YOUR_REGION-docker.pkg.dev
 ```
 
 Next, pull an image (if you don't already have one) that you want to push to the Artifact Respotory:
@@ -199,16 +199,16 @@ Next, pull an image (if you don't already have one) that you want to push to the
 docker pull docker.io/soloio/petstore-example:latest
 ```
 
-Tag the image for Artifact Repository. Replace `YOUR-PROJECT` with your Google Cloud Project ID.
+Tag the image for Artifact Repository.
 
 ```
-docker tag soloio/petstore-example us-west4-docker.pkg.dev/YOUR-PROJECT/my-repo/petstore-example
+docker tag soloio/petstore-example REPLACE_WITH_YOUR_REGION-docker.pkg.dev/REPLACE_WITH_YOUR_PROJECT_ID/REPLACE_WITH_YOUR_REPO/petstore-example
 ```
 
 Push the image to Artifact Repository:
 
 ```
-docker push us-west4-docker.pkg.dev/YOUR-PROJECT/my-repo/petstore-example
+docker push REPLACE_WITH_YOUR_REGION-docker.pkg.dev/YOUR-PROJECT/REPLACE_WITH_YOUR_REPO/petstore-example
 ```
 
 As an example for deploying from Artifact Repository, you can try to deploy the Petstore example. Modify `petstore-pkg-dev.yaml` to your needs and run:
