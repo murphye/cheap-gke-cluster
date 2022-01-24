@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: petstore
+  name: petstore
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: petstore
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: petstore
+    spec:
+      containers:
+      - image: us-west4-docker.pkg.dev/murphye/my-repo/petstore-example:latest
+        name: petstore
+        ports:
+        - containerPort: 8080
+          name: http
+      affinity:
+        # Because the cluster uses spot nodes that can be shut down at any time, having at least
+        # 2 replicas with antiAffinity is recommended for application resilency when a node shuts down
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: "app"
+                operator: In
+                values:
+                - petstore
+            topologyKey: "kubernetes.io/hostname"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: petstore
+  namespace: default
+  labels:
+    service: petstore
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+  selector:
+    app: petstore

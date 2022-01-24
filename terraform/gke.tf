@@ -38,6 +38,14 @@ resource "google_container_cluster" "default" {
     machine_type = var.machine_type
     disk_size_gb = var.disk_size
     tags = ["${var.gke_cluster_name}"]
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform",
+      "https://www.googleapis.com/auth/trace.append",
+      "https://www.googleapis.com/auth/service.management.readonly",
+      "https://www.googleapis.com/auth/monitoring",
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/servicecontrol",
+    ]
   }
   
   addons_config {

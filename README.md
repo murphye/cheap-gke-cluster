@@ -173,6 +173,50 @@ When a Spot VM node goes down, there may be traffic in route to the pods on that
 
 If you have a microservice architecture with microservices deployed across nodes, Istio service mesh (not provided in this solution) would allow you to implement retries between services. This topic might be covered in a future blog post in the context of this solution.
 
+### Use Artifact Registry for Deploying Private Images
+
+First, make sure the Artifact Registry API is enabled for your project:
+
+```
+gcloud services enable artifactregistry.googleapis.com
+```
+
+You may use the Google Cloud console, or use the `gcloud` command line to create a repository. Replace `my-repo` with your desired repository name. Replace `us-west4` with your desired Google Cloud region. You may also consider having a global repo, see the Artifact Repository docs for more info.
+
+```
+gcloud artifacts repositories create my-repo --repository-format=docker --location=us-west4 --description="My Docker repository"
+```
+
+Next, get your Artifact Registry Docker credentials:
+
+```
+gcloud auth configure-docker us-west4-docker.pkg.dev
+```
+
+Next, pull an image (if you don't already have one) that you want to push to the Artifact Respotory:
+
+```
+docker pull docker.io/soloio/petstore-example:latest
+```
+
+Tag the image for Artifact Repository. Replace `YOUR-PROJECT` with your Google Cloud Project ID.
+
+```
+docker tag soloio/petstore-example us-west4-docker.pkg.dev/YOUR-PROJECT/my-repo/petstore-example
+```
+
+Push the image to Artifact Repository:
+
+```
+docker push us-west4-docker.pkg.dev/YOUR-PROJECT/my-repo/petstore-example
+```
+
+As an example for deploying from Artifact Repository, you can try to deploy the Petstore example. Modify `petstore-pkg-dev.yaml` to your needs and run:
+
+```
+kubectl apply petstore-pkg-dev.yaml
+```
+
 ## Frequently Asked Questions
 
 1. *Is this GKE cluster, given the drawbacks of Spot VM nodes, really all that useful?*
