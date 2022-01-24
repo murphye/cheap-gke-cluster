@@ -300,7 +300,10 @@ kubectl delete pods --field-selector status.phase=Failed --all-namespaces
 
 14. *How do I update my SSL certificate without redeploying?*
 
-     Unfortunately, there is not a way to update `gcloud compute ssl-certificates` in place. It is best to create a new ssl-certificate and update the 
-     `target-https-proxies` for the certificate. Two swaps are necessary to prevent errors during `terraform destroy`.
+    Unfortunately, there is not a way to update `gcloud compute ssl-certificates` in place. It is best to create a new ssl-certificate and update the `target-https-proxies` for the certificate. Two swaps are necessary to prevent errors during `terraform destroy`.
 
-     See `update-ssl-certificate.sh` which will automate the process. Update the values before running for your use.
+    See `update-ssl-certificate.sh` which will automate the process. Update the values before running for your use.
+
+15. *Can I run more GKE nodes with the same cost model?*
+
+    The provided solution has a scalable pricing model. You could, for example, run a six node, 24 core, 96GB RAM cluster for about $100 per month. The more nodes that you run, the less likely you will be severely impacted by concurrent node replacements. For a super-savvy startup that is great at building fault-tolerant applications, using the Spot VM nodes is very appealing. You can also combine with non-Spot VM node pools for handling stateful workloads. So, this solution may provide some compelling ideas for those under tight budget constraints that are willing to accept the risks.
