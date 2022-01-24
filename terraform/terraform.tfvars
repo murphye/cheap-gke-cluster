@@ -40,4 +40,4 @@ ssl_cert_name    = "my-ssl-cert"
 ssl_cert_crt     = "certs/self-signed.crt"
 ssl_cert_key     = "certs/self-signed.key"
 # Change to true to enable HTTPS and HTTP redirect for the load balancer
-https            = true
+https            = false
