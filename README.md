@@ -289,7 +289,7 @@ kubectl delete pods --field-selector status.phase=Failed --all-namespaces
 
 13. *How do I use a domain name with my cluster?*
 
-     If you have a domain name to use, you can add an A record with the load balancer IP address to point to your cluster. You can get this IP address by running the following:
+     If you have a domain name to use, you can add an A record with the load balancer IP address to point to your cluster. You can get this IP address by running the following (change `my-static-ip` to match what's in `terraform.tfvars`):
 
      ```
      ipaddress=$(gcloud compute addresses describe my-static-ip --format="value(address)")
