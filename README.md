@@ -57,6 +57,8 @@ You may also change the region you choose to deploy. Each GCP region has differe
 
 If you choose to enable HTTPS (with HTTP redirect) at the load balancer, you can enable this in the `terraform.tfvars` by setting `https` to `true`. With the default configuration, a self-signed certificate is used. You can also use your own certificate as well by adding your own `.crt` and `.key` and configuring with the path to the files in `terraform.tfvars`.
 
+**Note:** To continue the cheap theme, you can purchase a domain name and a 1-year SSL certificate from [NameCheap](http://namecheap.com) for only $11 in total.
+
 ## Enable the GKE API
 
 If you have never used GKE previously on your account, the GKE API needs to be enabled first. This can be done using the following command:
