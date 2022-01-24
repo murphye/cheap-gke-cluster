@@ -1,4 +1,4 @@
-project_id  = "murphye"
+project_id  = "REPLACE_WITH_YOUR_PROJECT_ID"
 
 # Pick a region with low spot VM prices. us-west4 is currently the cheapest. asia-east2 and southamerica-east1 are also cheap options.
 # https://cloud.google.com/compute/vm-instance-pricing
