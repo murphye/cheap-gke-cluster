@@ -89,8 +89,6 @@ Next, get the IP Address of the load balancer for running the `curl` command to 
 ipaddress=$(gcloud compute addresses describe my-static-ip --format="value(address)")
 ```
 
-**Note:** If you have a domain name to use, you can add an A record with this IP Address to point to your cluster.
-
 **IMPORTANT: WAIT UP TO 2 MINUTES FOR THE `ingressgateway` NEG TO BE CREATED AND THE LOAD BALANCER TO BECOME HEALTHY**
 
 Run the curl command. You should see JSON data from the Petstore application.
@@ -289,7 +287,16 @@ kubectl delete pods --field-selector status.phase=Failed --all-namespaces
      Please see the [blog post](https://thenewstack.io/run-a-google-kubernetes-engine-cluster-for-under-25-month/) for detailed information on pricing. For GCP, data ingress is free. For data egress, Standard Tier networking egress charges apply ($0.085 per GB). For someone learning Kubernetes and not serving live traffic from the cluster, data egress charges would be minimal (less than $0.01 per day on average).
 
 
-13. *How do I update my SSL certificate without redeploying?*
+13. *How do I use a domain name with my cluster?*
+
+     If you have a domain name to use, you can add an A record with the load balancer IP address to point to your cluster. You can get this IP address by running the following:
+
+     ```
+     ipaddress=$(gcloud compute addresses describe my-static-ip --format="value(address)")
+     echo $ipaddress
+     ```
+
+14. *How do I update my SSL certificate without redeploying?*
 
      Unfortunately, there is not a way to update `gcloud compute ssl-certificates` in place. It is best to create a new ssl-certificate and update the 
      `target-https-proxies` for the certificate. Two swaps are necessary to prevent errors during `terraform destroy`.
