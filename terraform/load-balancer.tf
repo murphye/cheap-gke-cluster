@@ -18,6 +18,7 @@ resource "google_compute_subnetwork" "proxy" {
   role          = "ACTIVE"
 }
 
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_region_backend_service
 resource "google_compute_region_backend_service" "default" {
   # This cannot be deployed until the ingress gateway is deployed and the standalone NEG is automatically created
   depends_on = [null_resource.gloo, null_resource.delete_ingressgateway]
