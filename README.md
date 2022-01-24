@@ -89,6 +89,8 @@ Next, get the IP Address of the load balancer for running the `curl` command to 
 ipaddress=$(gcloud compute addresses describe my-static-ip --format="value(address)")
 ```
 
+**Note:** If you have a domain name to use, you can add an A record with this IP Address to point to your cluster.
+
 **IMPORTANT: WAIT UP TO 2 MINUTES FOR THE `ingressgateway` NEG TO BE CREATED AND THE LOAD BALANCER TO BECOME HEALTHY**
 
 Run the curl command. You should see JSON data from the Petstore application.
