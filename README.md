@@ -40,7 +40,7 @@ brew install helm
 
 ### Configure Terraform
 
-Change `terraform.tfvars` to use your Google Cloud `PROJECT_ID`. You can find your `PROJECT_ID` by running this command:
+Copy `terraform.tfvars.template` to `terraform.tfvars` and modify it to use your preferences and you Google Cloud `PROJECT_ID`. You can find your `PROJECT_ID` by running this command:
 
 ```bash
 gcloud projects list
