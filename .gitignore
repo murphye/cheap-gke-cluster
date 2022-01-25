@@ -15,3 +15,5 @@ credentials.json
 *.jks
 *.p12
 *.pfx
+
+terraform.tfvars
