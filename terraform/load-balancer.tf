@@ -44,9 +44,8 @@ resource "google_compute_region_backend_service" "default" {
 
 resource "null_resource" "delete_ingressgateway" {
   provisioner "local-exec" {
-    when    = destroy
-    # Delete ingressgateway on destroy
-    command = "gcloud compute network-endpoint-groups delete ingressgateway --quiet"
+    # Delete NEG ingressgateway on destroy, ignore error if no NEG is available to be deleted
+    command = "gcloud compute network-endpoint-groups delete ingressgateway --zone=${var.zone} --quiet || true"
   }
 }
 
