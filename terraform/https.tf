@@ -52,12 +52,17 @@ resource "google_compute_region_ssl_certificate" "default" {
   region  = google_compute_subnetwork.default.region
   name        = var.ssl_cert_name
   description = "SSL certificate for l7-xlb-proxy-https"
-  private_key = file(var.ssl_cert_key)
-  certificate = file(var.ssl_cert_crt)
+  private_key = file("${var.ssl_cert_path}/${var.ssl_cert_name}.key")
+  certificate = file("${var.ssl_cert_path}/${var.ssl_cert_name}.crt")
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # https://registry.terraform.io/providers/hashicorp/google-beta/latest/docs/resources/compute_ssl_certificate#example-usage---ssl-certificate-target-https-proxies
 resource "google_compute_region_target_https_proxy" "default" {
+  depends_on = [google_compute_region_ssl_certificate.default]
   project = google_compute_subnetwork.default.project
   region  = google_compute_subnetwork.default.region
   name    = "l7-xlb-proxy-https"
