@@ -1,3 +1,6 @@
+provider "random" {
+  # Configuration options
+}
 resource "google_compute_forwarding_rule" "redirect" {
   depends_on = [google_compute_subnetwork.proxy]
   count      = var.https ? 1 : 0
@@ -47,10 +50,18 @@ resource "google_compute_region_url_map" "redirect" {
   }
 }
 
+resource "random_string" "random_cert_suffix" {
+  length           = 8
+  special          = false
+  lower            = true
+  upper            = false
+}
+
 resource "google_compute_region_ssl_certificate" "default" { 
+  depends_on = [random_string.random_cert_suffix]
   project = google_compute_subnetwork.default.project
   region  = google_compute_subnetwork.default.region
-  name        = var.ssl_cert_name
+  name        = "${var.ssl_cert_name}-${random_string.random_cert_suffix.result}"
   description = "SSL certificate for l7-xlb-proxy-https"
   private_key = file("${var.ssl_cert_path}/${var.ssl_cert_name}.key")
   certificate = file("${var.ssl_cert_path}/${var.ssl_cert_name}.crt")
