@@ -9,3 +9,5 @@ helm install gloo gloo/gloo \
   --create-namespace \
   --namespace gloo-system \
   -f "$DIR/values.yaml"
+
+true
