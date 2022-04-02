@@ -53,6 +53,12 @@ gcloud config set project REPLACE_WITH_YOUR_PROJECT_ID
 ```
 You may also change the region you choose to deploy. Each GCP region has different pricing for VM Spot instances. See this [page](https://cloud.google.com/compute/vm-instance-pricing) for pricing details.
 
+
+For continuity, you should set your default region for `gcloud` as well.
+```
+gcloud config set compute/region REPLACE_WITH_YOUR_REGION
+```
+
 ### Optional: Enable HTTPS
 
 If you choose to enable HTTPS (with HTTP redirect) at the load balancer, you can enable this in the `terraform.tfvars` by setting `https` to `true`. With the default configuration, a self-signed certificate is used. You can also use your own certificate as well by adding your own `.crt` and `.key` and configuring with the path to the files in `terraform.tfvars`.
