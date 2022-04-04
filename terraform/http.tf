@@ -43,11 +43,9 @@ resource "google_compute_region_url_map" "default" {
         # while the node/pod are shutting down. With the retry mechanism, the traffic should shift to the other instance of the
         # ingress gateway on the retries.
         retry_policy {
-          
-          num_retries = 20
+          num_retries = 3
           per_try_timeout {
-            seconds = 0
-            nanos = 500000000
+            seconds = 1
           }
           retry_conditions = ["5xx", "deadline-exceeded", "connect-failure"]
         }

@@ -46,12 +46,12 @@ resource "google_compute_region_backend_service" "default" {
   }
 
   outlier_detection {
-    consecutive_errors = 1
+    consecutive_errors = 1 # Be aggressive about ejecting, the Gloo Edge gatway is likely no longer available 
     base_ejection_time {
       seconds = 30 # 30 is the default
     }
     interval {
-      seconds = 1 # 10 is the default
+      seconds = 1 # 10 is the default, be aggressive about detection of the Gloo Edge gateway being offline
     }
     max_ejection_percent = 50
   }
