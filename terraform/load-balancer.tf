@@ -40,6 +40,21 @@ resource "google_compute_region_backend_service" "default" {
     # This is a reasonable max rate for an Envoy proxy
     max_rate_per_endpoint = 3500
   }
+
+  circuit_breakers {
+    max_retries = 200
+  }
+
+  outlier_detection {
+    consecutive_errors = 1
+    base_ejection_time {
+      seconds = 30 # 30 is the default
+    }
+    interval {
+      seconds = 1 # 10 is the default
+    }
+    max_ejection_percent = 50
+  }
 }
 
 resource "null_resource" "delete_ingressgateway" {
@@ -61,9 +76,9 @@ resource "google_compute_region_health_check" "default" {
     request_path = "/"
   }
   timeout_sec         = 1
-  check_interval_sec  = 1
-  healthy_threshold   = 3
-  unhealthy_threshold = 3
+  check_interval_sec  = 3
+  healthy_threshold   = 1
+  unhealthy_threshold = 1
 }
 
 resource "google_compute_address" "default" {

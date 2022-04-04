@@ -16,9 +16,9 @@ spec:
         # Because the cluster uses spot nodes that can be shut down at any time, having a retry mechanism
         # is a good idea in case the pod/node shutdown process isn't clean leaving the possibility of request failures
         retries:
-          retryOn: 'connect-failure'
+          retryOn: 'connect-failure,5xx'
           numRetries: 3
-          perTryTimeout: '1s'
+          perTryTimeout: 1s # Default is 15s
       routeAction:
         single:
           upstream:
