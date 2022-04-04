@@ -42,11 +42,11 @@ resource "google_compute_region_backend_service" "default" {
   }
 
   circuit_breakers {
-    max_retries = 200
+    max_retries = 10 # Default is 3
   }
 
   outlier_detection {
-    consecutive_errors = 1 # Be aggressive about ejecting, the Gloo Edge gatway is likely no longer available 
+    consecutive_errors = 2 # Be aggressive about ejecting, the Gloo Edge gatway is likely no longer available 
     base_ejection_time {
       seconds = 30 # 30 is the default
     }
