@@ -36,20 +36,16 @@ variable "ip_address_name" {
   description = "The name of the static IP Address for the load balancer"
 }
 
-variable "ssl_cert_name" {
-  description = "The name of the SSL certificate for the load balancer"
-}
-
 variable "https" {
   description = "Whether to set up the load balancer with HTTPS or not"
 }
 
-variable "ssl_cert_crt" {
-  description = "Path to the SSL certificate .crt"
+variable "ssl_cert_name" {
+  description = "The name of the files .crt and .key files inside cert_path folder. This will be used as SSL certificate name for the load balancer"
 }
 
-variable "ssl_cert_key" {
-  description = "Path to the SSL certificate private .key"
+variable "ssl_cert_path" {
+  description = "Path to the SSL certificate folder where your .crt and .key files are"
 }
 
 resource "google_compute_network" "default" {
