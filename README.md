@@ -266,7 +266,7 @@ kubectl delete pods --field-selector status.phase=Failed --all-namespaces
 
 7. *What about HTTPS/TLS termination for the Regional HTTP Load Balancer?*
 
-    Implementing HTTPS (including a redirect) is possible, but not currently incorporated into this solution. There is a GitHub issue open [here](https://github.com/murphye/cheap-gke-cluster/issues/1) with details. 
+    See [here](#optional-enable-https) for details
 
 8. *Can I do TCP passthrough rather than HTTP for the Regional Load Balancer?*
 
