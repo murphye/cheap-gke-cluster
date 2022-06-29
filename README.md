@@ -88,10 +88,10 @@ Terraform will take several minutes to run. Please be patient! A lot of things a
 Next, you must deploy the Petstore sample application and a `VirtualService` to route traffic to that application:
 
 ```bash
-kubectl apply -f ../petstore.yaml
-kubectl apply -f ../petstore-gateway.yaml
-kubectl apply -f ../petstore-virtualservice.yaml
-kubectl apply -f ../petstore-destinationrule.yaml
+kubectl apply -f ../petstore/petstore.yaml
+kubectl apply -f ../petstore/petstore-gateway.yaml
+kubectl apply -f ../petstore/petstore-virtualservice.yaml
+kubectl apply -f ../petstore/petstore-destinationrule.yaml
 ```
 
 Next, get the IP Address of the load balancer for running the `curl` command to verify deployment. Change the `my-static-ip` if it was changed in the `terraform.tfvars`

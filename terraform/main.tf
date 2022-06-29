@@ -20,8 +20,12 @@ variable "gke_cluster_name" {
   description = "The name of the cluster"
 }
 
-variable "num_nodes" {
-  description = "The number of cluster nodes"
+variable "num_nodes_non_spot" {
+  description = "The number of non-spot cluster nodes"
+}
+
+variable "num_nodes_spot" {
+  description = "The number of spot cluster nodes"
 }
 
 variable "machine_type" {

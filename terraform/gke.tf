@@ -24,7 +24,7 @@ resource "google_container_cluster" "default" {
   project  = var.project_id
   name     = var.gke_cluster_name
   location = var.zone
-  initial_node_count = var.num_nodes
+  initial_node_count = var.num_nodes_non_spot
   # More info on the VPC native cluster: https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg#create_a-native_cluster
   networking_mode = "VPC_NATIVE"
   network    = google_compute_network.default.name
@@ -33,8 +33,7 @@ resource "google_container_cluster" "default" {
   logging_service = "none"
 
   node_config {
-    # More info on Spot VMs with GKE https://cloud.google.com/kubernetes-engine/docs/how-to/spot-vms#create_a_cluster_with_enabled
-    spot = true
+    # Primary (non-spot) nodes
     machine_type = var.machine_type
     disk_size_gb = var.disk_size
     tags = ["${var.gke_cluster_name}"]
@@ -80,6 +79,31 @@ resource "google_container_cluster" "default" {
       cidr_block = "0.0.0.0/0"
       display_name = "World"
     }
+  }
+}
+
+resource "google_container_node_pool" "spot_nodes" {
+  provider   = google-beta
+  project    = var.project_id
+  name       = "spot-pool"
+  location   = var.zone
+  cluster    = google_container_cluster.default.name
+  node_count = var.num_nodes_spot
+
+  node_config {
+    # More info on Spot VMs with GKE https://cloud.google.com/kubernetes-engine/docs/how-to/spot-vms#create_a_cluster_with_enabled
+    spot = true
+    machine_type = var.machine_type
+    disk_size_gb = var.disk_size
+    tags = ["${var.gke_cluster_name}"]
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform",
+      "https://www.googleapis.com/auth/trace.append",
+      "https://www.googleapis.com/auth/service.management.readonly",
+      "https://www.googleapis.com/auth/monitoring",
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/servicecontrol",
+    ]
   }
 }
 
