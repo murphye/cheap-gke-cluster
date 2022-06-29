@@ -1,5 +1,5 @@
 # This will construct a VPC-native, private GKE cluster. For effective routing from the Regional External HTTP Load Balancer,
-# having the VPC-native cluster is needed to make Gloo Edge's Envoy gateway-proxy pods routable via a standalone NEG.
+# having the VPC-native cluster is needed to make Istio's Envoy gateway-proxy pods routable via a standalone NEG.
 # See links in the comments below for specifics. This page is a good place to understand the overall solution: 
 # https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg
 
@@ -81,6 +81,23 @@ resource "google_container_cluster" "default" {
       display_name = "World"
     }
   }
+}
+
+resource "google_compute_firewall" "istio-webhook" {
+  provider = google-beta
+  project  = var.project_id
+  name     = "${var.gke_cluster_name}-istio-webhook"
+  network  = var.network_name
+
+  allow {
+    protocol  = "tcp"
+    # https://istio.io/latest/docs/setup/platform-setup/gke/
+    # For private GKE clusters, an automatically created firewall rule does not open port 15017. This is needed by the Pilot discovery validation webhook.
+    ports     = ["15017"]
+  }
+
+  source_ranges = ["172.16.0.16/28"]
+  target_tags = ["${var.gke_cluster_name}"]
 }
 
 resource "time_sleep" "wait_for_kube" {

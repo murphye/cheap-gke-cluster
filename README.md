@@ -89,7 +89,9 @@ Next, you must deploy the Petstore sample application and a `VirtualService` to 
 
 ```bash
 kubectl apply -f ../petstore.yaml
+kubectl apply -f ../petstore-gateway.yaml
 kubectl apply -f ../petstore-virtualservice.yaml
+kubectl apply -f ../petstore-destinationrule.yaml
 ```
 
 Next, get the IP Address of the load balancer for running the `curl` command to verify deployment. Change the `my-static-ip` if it was changed in the `terraform.tfvars`
@@ -153,21 +155,21 @@ Terraform configs (`.tf`) are commented with specific details and references to 
 
 ## Next Steps For Using Your Cheap GKE Cluster
 
-### Understanding Gloo Edge
+### Understanding Istio
 
-[Gloo Edge](https://docs.solo.io/gloo-edge/master/) provides powerful traffic routing capabilities that go far beyond the standard [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/). As Gloo Edge uses Envoy, capabilities such as retries help improve the resiliency of routing to applications in your cluster that is using Spot VM node instances.
+[Istio](https://istio.io) provides powerful traffic routing capabilities that go far beyond the standard [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/). As Istio uses Envoy, capabilities such as retries help improve the resiliency of routing to applications in your cluster that is using Spot VM node instances.
 
-It's beneficial, but not required, to [install `glooctl`](https://docs.solo.io/gloo-edge/master/installation/glooctl_setup/) to work with Gloo Edge. Here is how you install it on a Mac with Homebrew.
+It's beneficial, but not required, to [install `istioctl`](https://istio.io/latest/docs/setup/install/istioctl/) to work with Istio. Here is how you install it on a Mac with Homebrew.
 
 ```
-brew install glooctl
+brew install istioctl
 ```
 
 ### Update Config and Deploy Another Application
 
 Next you should proceed with:
 
-1. Examining `virtualservice.yaml` and [understand how it works](https://docs.solo.io/gloo-edge/master/introduction/traffic_management/).
+1. Examining `virtualservice.yaml` and [understand how it works](https://istio.io/latest/docs/reference/config/networking/virtual-service/).
 1. Deploying your own application onto your new Kubernetes cluster.
 1. Modifying `virtualservice.yaml` to use your application's upstream. You can view upstreams with `glooctl get upstream`. Make sure the application is available at `/` or the Load Balancer health checks will fail. You may choose to rewrite the path as is done in `virtualservice.yaml` or change the `regional-l7-xlb-map-http` and `l7-xlb-basic-check-http` in `load-balancer.tf` to use a path other than `"/"`.
 
@@ -272,9 +274,9 @@ kubectl delete pods --field-selector status.phase=Failed --all-namespaces
 
     This is not currently possible with Google's managed proxy service, but is possible with Envoy, should Google decide to support it in the future.
 
-9. *Can I use an Ingress Controller implementation such as NGINX instead of Gloo Edge?*
+9. *Can I use an Ingress Controller implementation such as NGINX instead of Istio?*
 
-    While not provided in this solution, yes you can use an alternative, but Gloo Edge/Envoy is ideally suited for this use case where a high level of resiliency is needed due to the use of Spot VM cluster nodes.
+    While not provided in this solution, yes you can use an alternative, but Istio/Envoy is ideally suited for this use case where a high level of resiliency is needed due to the use of Spot VM cluster nodes.
 
 10. *In the Google Cloud console, why don't I don't see the deployed Load Balancer?*
 

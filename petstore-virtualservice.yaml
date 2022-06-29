@@ -1,26 +1,25 @@
-apiVersion: gateway.solo.io/v1
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: default
-  namespace: gloo-system
+  name: petstore-virtualservice
 spec:
-  virtualHost:
-    domains:
-    - '*'
-    routes:
-    - matchers:
-      # l7-xlb-basic-check-http is using the root path for health checking
-      - exact: /
-      options:
-        prefixRewrite: /api/pets
-        # Because the cluster uses spot nodes that can be shut down at any time, having a retry mechanism
-        # is a good idea in case the pod/node shutdown process isn't clean leaving the possibility of request failures
-        retries:
-          retryOn: 'connect-failure,5xx'
-          numRetries: 5
-          perTryTimeout: 1s # Default is 15s
-      routeAction:
-        single:
-          upstream:
-            name: default-petstore-8080
-            namespace: gloo-system
+  hosts:
+  - "*"
+  gateways:
+  - petstore-gateway
+  http:
+  - match:
+    - uri:
+        # l7-xlb-basic-check-http is using the root path for health checking
+        exact: /
+    rewrite:
+      uri: /api/pets
+    route:
+    - destination:
+        host: petstore.default.svc.cluster.local
+    # Because the cluster uses spot nodes that can be shut down at any time, having a retry mechanism
+    # is a good idea in case the pod/node shutdown process isn't clean leaving the possibility of request failures
+    retries:
+      attempts: 5
+      perTryTimeout: 1s # Default is 15s
+      retryOn: connect-failure,5xx

@@ -1,0 +1,19 @@
+
+service:
+  type: ClusterIP
+  annotations:
+    cloud.google.com/neg: '{"exposed_ports": {"80":{"name": "ingressgateway"}}}'
+replicaCount: 2
+autoscaling:
+  enabled: true
+  minReplicas: 2
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: "istio"
+          operator: In
+          values:
+          - ingressgateway
+      topologyKey: "kubernetes.io/hostname"

@@ -21,7 +21,7 @@ resource "google_compute_subnetwork" "proxy" {
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_region_backend_service
 resource "google_compute_region_backend_service" "default" {
   # This cannot be deployed until the ingress gateway is deployed and the standalone NEG is automatically created
-  depends_on = [null_resource.gloo, null_resource.delete_ingressgateway]
+  depends_on = [null_resource.istio, null_resource.delete_ingressgateway]
   project = google_compute_subnetwork.default.project
   region  = google_compute_subnetwork.default.region
   name        = "l7-xlb-backend-service-http"
@@ -33,7 +33,7 @@ resource "google_compute_region_backend_service" "default" {
   health_checks = [google_compute_region_health_check.default.id]
 
   backend {
-    # See the gloo.tf for more information on the ingressgateway standalone NEG that is automatically created
+    # See the istio.tf for more information on the ingressgateway standalone NEG that is automatically created
     group = "https://www.googleapis.com/compute/v1/projects/${var.project_id}/zones/${var.zone}/networkEndpointGroups/ingressgateway"
     capacity_scaler = 1
     balancing_mode = "RATE"
@@ -46,12 +46,12 @@ resource "google_compute_region_backend_service" "default" {
   }
 
   outlier_detection {
-    consecutive_errors = 2 # Be aggressive about ejecting, the Gloo Edge gatway is likely no longer available 
+    consecutive_errors = 2 # Be aggressive about ejecting, the Istio gatway is likely no longer available 
     base_ejection_time {
       seconds = 30 # 30 is the default
     }
     interval {
-      seconds = 1 # 10 is the default, be aggressive about detection of the Gloo Edge gateway being offline
+      seconds = 1 # 10 is the default, be aggressive about detection of the Istio gateway being offline
     }
     max_ejection_percent = 50
   }

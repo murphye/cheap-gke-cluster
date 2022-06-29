@@ -1,0 +1,12 @@
+pilot:
+  autoscaleMin: 2
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: "istio"
+            operator: In
+            values:
+            - pilot
+        topologyKey: "kubernetes.io/hostname"
