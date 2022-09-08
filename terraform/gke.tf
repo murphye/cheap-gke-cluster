@@ -19,18 +19,18 @@ resource "google_compute_subnetwork" "default" {
   ip_cidr_range = "10.0.0.0/24"
 }
 
-resource "google_container_cluster" "default" {
-  provider = google-beta
-  project  = var.project_id
-  name     = var.gke_cluster_name
-  location = var.zone
-  initial_node_count = var.num_nodes
-  # More info on the VPC native cluster: https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg#create_a-native_cluster
-  networking_mode = "VPC_NATIVE"
-  network    = google_compute_network.default.name
-  subnetwork = google_compute_subnetwork.default.name
-  # Disable the Google Cloud Logging service because you may overrun the Logging free tier allocation, and it may be expensive
-  logging_service = "none"
+# Node pool configuration
+resource "google_container_node_pool" "primary_pool" {
+  name       = "primary-node-pool"
+  cluster    = "${google_container_cluster.default.name}"
+  project    = google_compute_network.default.project
+  location   = var.zone
+  node_count = var.num_nodes
+
+  autoscaling {
+    min_node_count = var.num_nodes
+    max_node_count = 10
+  }
 
   node_config {
     # More info on Spot VMs with GKE https://cloud.google.com/kubernetes-engine/docs/how-to/spot-vms#create_a_cluster_with_enabled
@@ -47,7 +47,27 @@ resource "google_container_cluster" "default" {
       "https://www.googleapis.com/auth/servicecontrol",
     ]
   }
-  
+  management {
+    auto_repair  = true
+    auto_upgrade = true
+  }
+}
+
+resource "google_container_cluster" "default" {
+  provider = google-beta
+  project  = var.project_id
+  name     = var.gke_cluster_name
+  location = var.zone
+  # More info on the VPC native cluster: https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg#create_a-native_cluster
+  networking_mode = "VPC_NATIVE"
+  network    = google_compute_network.default.name
+  subnetwork = google_compute_subnetwork.default.name
+  # Disable the Google Cloud Logging service because you may overrun the Logging free tier allocation, and it may be expensive
+  logging_service = "none"
+
+  remove_default_node_pool = "true"
+  # initial_node_count = 1
+
   addons_config {
     http_load_balancing {
       # This needs to be enabled for the NEG to be automatically created for the ingress gateway svc
