@@ -137,7 +137,7 @@ These are the main parts of the solution to achieve a high level of cost savings
 
 1. Use a private, [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg#create_a-native_cluster), [GKE cluster using only Spot VM instances](https://cloud.google.com/kubernetes-engine/docs/concepts/spot-vms) as the cluster nodes. This will save you up to 90% on the cost of VMs, depending on the GCP region. This could save you up to $150 per month for GKE node VMs for a 3 node, 6 core cluster.
 
-1. Use a [Regional (rather than Global) HTTP Load Balancer](https://cloud.google.com/load-balancing/docs/https) which is currently free as a Beta preview. Additional costs may be incurred in the future. This currently saves you $18.26 per month.
+1. Use a [Regional (rather than Global) HTTP Load Balancer](https://cloud.google.com/load-balancing/docs/https) ~~which is currently free as a Beta preview. Additional costs may be incurred in the future. This currently saves you $18.26 per month.~~
 
     a. Attach the [Regional HTTP Load Balancer to a standalone NEG](https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg#how_to) to route traffic directly from the Load Balancer to the GKE ingress gateway pods to achieve container-native load balancing.
 
@@ -264,7 +264,7 @@ kubectl delete pods --field-selector status.phase=Failed --all-namespaces
 
     This solution has been tried successfully with `us-west4` and `asia-east2`, both of which have very low Spot VM instance prices. It was not compatible with `europe-central2` due to lack of the Standard networking tier. Otherwise, the best way to know is to give it a try and see if the deployment is successful.
 
-7. *What about HTTPS/TLS termination for the Regional HTTP Load Balancer?*
+7. *What about HTTPS/TLS termination for the HTTP Load Balancer?*
 
     Implementing HTTPS (including a redirect) is possible, but not currently incorporated into this solution. There is a GitHub issue open [here](https://github.com/murphye/cheap-gke-cluster/issues/1) with details. 
 
