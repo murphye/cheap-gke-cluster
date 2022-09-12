@@ -42,3 +42,7 @@ ssl_cert_key     = "certs/self-signed.key"
 
 # Change to true to enable HTTPS and HTTP redirect for the load balancer
 https            = false
+# You need to have the certificate and the key in the same folder.
+# Example self-signed.crt and self-signed.key in certs directory
+# ssl_cert_name    = "self-signed"
+# ssl_cert_path    = "certs"
