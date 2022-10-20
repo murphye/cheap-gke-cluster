@@ -21,9 +21,11 @@ spec:
         ports:
         - containerPort: 8080
           name: http
+      nodeSelector:
+        # Make sure this pod gets scheduled onto a spot node
+        cloud.google.com/gke-spot: "true"
       affinity:
-        # Because the cluster uses spot nodes that can be shut down at any time, having at least
-        # 2 replicas with antiAffinity is recommended for application resilency when a node shuts down
+        # podAntiAffinity ensures pods are spread across multiple spot nodes
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
